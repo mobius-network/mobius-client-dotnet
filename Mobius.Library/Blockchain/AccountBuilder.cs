@@ -12,16 +12,17 @@ namespace Mobius.Library.Blockchain
         ///<returns>Mobius.Blockchain.Account instance</returns>
         async public Task<Account> Build(KeyPair keypair)
         {
-			string accountId = StrKey.EncodeStellarAccountId(keypair.PublicKey);
+
+            string accountId = StrKey.EncodeStellarAccountId(keypair.PublicKey);
 
             // Fixed for now....
-			Uri uri = new Uri($"https://horizon-testnet.stellar.org/accounts/{accountId}");
+            Uri uri = new Uri($"https://horizon-testnet.stellar.org/accounts/{accountId}");
 
             Server server = new Client().HorizonClient;
 
             AccountResponse account = await server.Accounts.Account(uri);
 
             return new Account(account, keypair);
-		}
+        }   
     }
 }

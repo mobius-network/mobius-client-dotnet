@@ -10,9 +10,7 @@ namespace Mobius.Library.App
         async public Task<App> Build(byte[] developerSecret, byte[] address)
         {
             KeyPair developerKeypair = KeyPair.FromSecretSeed(developerSecret);
-            System.Console.WriteLine(StrKey.EncodeStellarAccountId(developerKeypair.PublicKey));
-            System.Console.WriteLine(developerKeypair.AccountId);
-			Blockchain.Account developerAccount = await new AccountBuilder().Build(developerKeypair);
+            Blockchain.Account developerAccount = await new AccountBuilder().Build(developerKeypair);
 
             KeyPair userKeypair = KeyPair.FromPublicKey(address);
             Blockchain.Account userAccount = await new AccountBuilder().Build(userKeypair);

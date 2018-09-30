@@ -1,5 +1,7 @@
 
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using Mobius.Library.Utils;
 using stellar_dotnet_sdk;
 
@@ -68,16 +70,12 @@ namespace Mobius.Library.Auth
         * @param {string} format="binary" - format for output data
         * @returns {Buffer|string} depends on `format` param passed
         */
-        public byte[] hash(string format = "binary") {
+        public string hash(string format = "binary") {
             validate();
 
             byte[] hash = _tx.Hash();
 
-            if (format == "binary") {
-                return hash;
-            }
-
-            return hash;
+            return Util.BytesToHex(hash);
         }
 
         /**

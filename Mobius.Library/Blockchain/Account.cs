@@ -39,7 +39,7 @@ namespace Mobius.Library.Blockchain
         ///<returns> {boolean} true if given keypair is added as cosigner to current account</returns>
         public Boolean authorized(Stellar.KeyPair toKeypair) 
         {
-			stellar_dotnet_sdk.responses.Signer signer = _findSigner(toKeypair.PublicKey.ToString());
+            stellar_dotnet_sdk.responses.Signer signer = _findSigner(toKeypair.PublicKey.ToString());
 
             return signer != null ? true : false;
         }
@@ -73,9 +73,9 @@ namespace Mobius.Library.Blockchain
         async public Task<AccountResponse> reload() 
         {
             _account = null;
-    
+
             byte[] accountId = _keypair.PublicKey;
-            
+
             Uri uri = new Uri($"/accounts/{accountId}");
 
             _account = await _clientInstance.Accounts.Account(uri);

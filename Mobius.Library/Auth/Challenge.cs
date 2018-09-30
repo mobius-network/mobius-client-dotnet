@@ -13,7 +13,7 @@ namespace Mobius.Library.Auth
         */
         public string Call(byte[] developerSecret, int expireIn = 0) {
             if (expireIn == 0) expireIn = Client.challengeExpiresIn;
-            
+
             KeyPair keypair = _keypair(developerSecret);
             Account account = new Account(keypair, _randomSequence());
 
