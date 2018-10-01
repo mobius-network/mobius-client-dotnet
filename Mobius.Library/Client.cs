@@ -2,25 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Mobius.Library.Models;
 using stellar_dotnet_sdk;
 using stellar_dotnet_sdk.responses;
 using stellar_dotnet_sdk.responses.page;
 
 namespace Mobius.Library {
     public class Client {
-        private static Networks Issuers = new Networks() {
-            PUBLIC = "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH",
-            TESTNET = "GDRWBLJURXUKM4RWDZDTPJNX6XBYFO3PSE4H4GPUL6H6RCUQVKTSD4AT"
+        private static Dictionary<string, string> Issuers = new Dictionary<string, string>() {
+            { "PUBLIC", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH" },
+            { "TESTNET", "GDRWBLJURXUKM4RWDZDTPJNX6XBYFO3PSE4H4GPUL6H6RCUQVKTSD4AT" }
         };
-        private static Networks Urls = new Networks() {
-            TESTNET = "https://horizon-testnet.stellar.org",
-            PUBLIC = "https://horizon.stellar.org"
+        private static Dictionary<string, string> Urls = new Dictionary<string, string>() {
+            { "TESTNET", "https://horizon-testnet.stellar.org" },
+            { "PUBLIC", "https://horizon.stellar.org" }
         };
         private const string _assetCode = "MOBI";
-        private static Server _horizonClient { get; set; }
-        private static Network _network { get; set; }
-        private static AssetResponse _stellarAsset { get; set; }
+        private static Server _horizonClient;
+        private static Network _network;
+        private static AssetResponse _stellarAsset;
 
         ///<summary>In strict mode, session must be not older than 10 seconds from now</summary>
         ///<returns>int strict interval value in seconds (10 by default)</returns>
@@ -43,8 +42,8 @@ namespace Mobius.Library {
             string assetIssuer =
                 Network.Current != null && 
                 Network.IsPublicNetwork(Network.Current)
-                    ? Issuers.PUBLIC
-                    : Issuers.TESTNET;
+                    ? Issuers["PUBLIC"]
+                    : Issuers["TESTNET"];
 
             return assetIssuer;
         }
@@ -90,8 +89,8 @@ namespace Mobius.Library {
                 _horizonClient =
                     Network.Current != null && 
                     Network.IsPublicNetwork(Network.Current)
-                        ? new Server(Urls.PUBLIC)
-                        : new Server(Urls.TESTNET);
+                        ? new Server(Urls["PUBLIC"])
+                        : new Server(Urls["TESTNET"]);
 
                 return _horizonClient;
             }

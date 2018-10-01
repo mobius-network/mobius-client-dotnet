@@ -9,7 +9,7 @@ namespace Mobius.Library.Blockchain
     public class AccountBuilder
     {
         ///<summary>Get account information from Stellar network and returns an instance of Account</summary>
-        ///<returns>Mobius.Blockchain.Account instance</returns>
+        ///<returns>Promise returns Blockchain.Accont instance</returns>
         async public Task<Account> Build(KeyPair keypair)
         {
 

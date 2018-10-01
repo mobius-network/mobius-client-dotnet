@@ -13,10 +13,13 @@ namespace Mobius.Library.Blockchain
 {
     public class Account
     {
-        private AccountResponse _account { get; set; }
-        private Stellar.KeyPair _keypair { get; set; }
-        private Dictionary<string, string> _assetIssuers { get; set; }
-        private Stellar.Server _clientInstance { get; set; }
+        private AccountResponse _account;
+        private Stellar.KeyPair _keypair;
+        private Dictionary<string, string> _assetIssuers;
+        private Stellar.Server _clientInstance;
+
+        ///<param name="account">Stellar AccountResponse instance</param>
+        ///<param name="keypair">Account keypair</param>
         public Account(AccountResponse account, Stellar.KeyPair keypair)
         {
             _account = account;
@@ -25,18 +28,20 @@ namespace Mobius.Library.Blockchain
             _clientInstance = new Client().HorizonClient;
         }
 
+        ///<returns>Keypair for account</returns>
         public Stellar.KeyPair KeyPair()
         {
             return _keypair;
         }
 
+        ///<returns>Account info</returns>
         public AccountResponse Info()
         {
             return _account;
         }
 
-        ///<param name="toKeypair"> {StellarSdk.Keypair} toKeypair</param>
-        ///<returns> {boolean} true if given keypair is added as cosigner to current account</returns>
+        ///<param name="toKeypair">Keypair to check</param>
+        ///<returns>Returns true if given keypair is added as cosigner to current account.</returns>
         public Boolean authorized(Stellar.KeyPair toKeypair) 
         {
             stellar_dotnet_sdk.responses.Signer signer = _findSigner(toKeypair.PublicKey.ToString());
@@ -44,8 +49,8 @@ namespace Mobius.Library.Blockchain
             return signer != null ? true : false;
         }
 
-        ///<param name="asset"> {StellarSdk.Asset} [asset=Client.stellarAsset]</param>
-        ///<returns> {number} balance for given asset</returns>
+        ///<param name="asset">Asset to check balance of</param>
+        ///<returns>Promise returns balance of given asset - default Client.StellarAsset()</returns>
         async public Task<decimal> balance(AssetResponse asset = null) 
         {
             if (asset == null) asset = await new Client().StellarAsset();
@@ -55,8 +60,8 @@ namespace Mobius.Library.Blockchain
             return decimal.Parse(balance.BalanceString);
         }
 
-        ///<param name="asset"> {StellarSdk.Asset}</param>
-        ///<returns> {boolean} true if trustline exists for given asset and limit is positive</returns>
+        ///<param name="asset">Asset to check for trustline of</param>
+        ///<returns>Promise returns true if trustline exists for given asset and limit is positive.</returns>
         async public Task<Boolean> trustlineExists(AssetResponse asset = null) 
         {
             if (asset == null) asset = await new Client().StellarAsset();
@@ -68,8 +73,8 @@ namespace Mobius.Library.Blockchain
             return limit > 0;
         }
 
-        ///<summary>>Invalidates current account information.</summary>
-        ///<returns> {Promise}</returns>
+        ///<summary>Invalidates current account information.</summary>
+        ///<returns>Promise returns reloaded account.</returns>
         async public Task<AccountResponse> reload() 
         {
             _account = null;
@@ -83,10 +88,10 @@ namespace Mobius.Library.Blockchain
             return _account;
         }
 
-        ///<summary>Private</summary>
-        ///<param name="asset"> {StellarSdk.Asset} asset - Asset to compare</param>
-        ///<param name="balance"> {any} balance - balance entry to compare</param>
-        ///<returns> {boolean} true if balance matches with given asset</returns>
+        ///<summary>Private: check if balance matches a given asset.</summary>
+        ///<param name="asset">Asset to compare</param>
+        ///<param name="balance">Balance entry to compare</param>
+        ///<returns>Returns true if balance matches with given asset.</returns>
         private Boolean _balanceMatches(AssetResponse asset, Balance balance) 
         {
             string assetType = balance.AssetType;
@@ -105,17 +110,17 @@ namespace Mobius.Library.Blockchain
             );
         }
 
-        ///<summary>Private</summary>
-        ///<param name="asset"> {StellarSdk.Asset} asset - Asset to find</param>
-        ///<returns> {object} matched balance</returns>
+        ///<summary>Private: find balance of asset.</summary>
+        ///<param name="asset">Asset to find balance of</param>
+        ///<returns>Returns matched balance.</returns>
         private Balance _findBalance(AssetResponse asset) 
         {
             return _account.Balances.Where(b => _balanceMatches(asset, b)).FirstOrDefault();
         }
 
-        ///<summary>Private</summary>
-        ///<param name="publicKey"> {string} publicKey - signer's key to find</param>
-        ///<returns> {object} matched signer</returns>
+        ///<summary>Private: find signer of account.</summary>
+        ///<param name="publicKey">Signer's public key to find</param>
+        ///<returns>Returns matched signer.</returns>
         private stellar_dotnet_sdk.responses.Signer _findSigner(string publicKey) 
         {
             return _account.Signers.Where(s => s.AccountId == publicKey).FirstOrDefault();

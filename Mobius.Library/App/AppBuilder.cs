@@ -7,6 +7,10 @@ namespace Mobius.Library.App
 {
     public class AppBuilder
     {
+        ///<summary>Build new app instance</summary>
+        ///<param name="developerSecret">Developer secret seed</param>
+        ///<param name="address">User public key</param>
+        ///<returns>Promise returns new app instance</returns>
         async public Task<App> Build(byte[] developerSecret, byte[] address)
         {
             KeyPair developerKeypair = KeyPair.FromSecretSeed(developerSecret);

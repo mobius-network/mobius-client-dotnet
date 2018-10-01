@@ -6,6 +6,11 @@ namespace Mobius.Library.Auth
 {
     public class Sign
     {
+        ///<summary>Adds signature to given transaction.</summary>
+        ///<param name="userSecret">Users secret seed</param>
+        ///<param name="xdr">Challenge transaction xdr</param>
+        ///<param name="address">Developer public key</param>
+        ///<returns>Returns base64-encoded transaction envelope</returns>
         public string Call(byte[] userSecret, string xdr, byte[] address)
         {
             Transaction tx = Transaction.FromEnvelopeXdr(xdr);
@@ -19,31 +24,24 @@ namespace Mobius.Library.Auth
             return tx.ToEnvelopeXdrBase64();
         }
 
-        /**
-        * @private
-        * @param {string} userSecret - Users private key
-        * @returns {StellarSdk.Keypair} StellarSdk.Keypair object for given users private key
-        */
+        ///<summary>Private: returns keypair from secret seed</summary>
+        ///<param name="userSecret">Private seed</param>
+        ///<returns>Returns keypair from given secret seed</returns>
         private KeyPair _keypair(byte[] userSecret) {
             return KeyPair.FromSecretSeed(userSecret);
         }
 
-        /**
-        * @private
-        * @param {string}  address - Developers public key
-        * @returns {StellarSdk.Keypair} StellarSdk.Keypair object for given developers public key
-        */
+        ///<summary>Private: returns keypair from public key</summary>
+        ///<param name="address">Developers public key</param>
+        ///<returns>Returns keypair from given users public key</returns>
         private KeyPair _developerKeypair(byte[] address) {
             return KeyPair.FromPublicKey(address);
         }
 
-        /**
-        * Validates transaction is signed by developer.
-        * @private
-        * @param {StellarSdk.Keypair} keypair - StellarSdk.Keypair object for given Developer public key
-        * @param {StellarSdk.Transaction} tx - StellarSdk.Transaction to verify
-        * @returns {boolean} true is transaction is valid, throws error otherwise
-        */
+        ///<summary>Private: Validates transaction is signed by developer.</summary>
+        ///<param name="keypair">keypair object for given developer public key</param>
+        ///<param name="tx">Transaction to verify</param>
+        ///<returns>Returns true is transaction is valid, throws error otherwise</returns>
         private Boolean _validate(KeyPair keypair, Transaction tx) {
             Boolean isValid = new Utils.Keypair().verify(tx, keypair);
 

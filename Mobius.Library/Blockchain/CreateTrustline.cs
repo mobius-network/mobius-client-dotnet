@@ -8,9 +8,9 @@ namespace Mobius.Library.Blockchain
     public class CreateTrustline
     {
         ///<summary>Creates unlimited trustline for given asset.</summary>
-        ///<param name="keypair">KeyPair: keypair - Account keypair</para>
-        ///<param name="asset">AssetResponse: asset - optional, default to Client.StellarAsset</param>
-        ///<returns>Promise = SubmitTransactionResponse: submitted transaction response</returns>
+        ///<param name="keypair">Account keypair</para>
+        ///<param name="asset">(optional) - default to Client.StellarAsset()</param>
+        ///<returns>Promise returns submitted transaction response.</returns>
         async public Task<SubmitTransactionResponse> Call(KeyPair keypair, AssetResponse asset = null) {
             Client client = new Client();
 
@@ -28,9 +28,9 @@ namespace Mobius.Library.Blockchain
         }
 
         ///<summary>Private: Generate changeTrust transaction with given parameters.</summary>
-        ///<param name="account">stellar_dotnet_sdk.Account: account</param>
-        ///<param name="asset">stellar_dotnet_sdk.Asset: asset</param>
-        ///<returns>stellar_dotnet_sdk.Transaction: stellar transaction</returns>
+        ///<param name="account">Stellar account</param>
+        ///<param name="asset">Stellar asset</param>
+        ///<returns>Returns transaction.</returns>
         private Transaction _tx(stellar_dotnet_sdk.Account account, Asset asset) {
             string assetXdr = asset.ToXdr().ToString();
             string opXdrAmount = Operation.ToXdrAmount(assetXdr).ToString();

@@ -2,7 +2,6 @@
 ## mobius-client-dotnet
 
 ### TODO's
-* Convert current multiline comments to XML comments
 * Clean `using` statements
 * Set AccountBuilder.cs URI dynamically
 * Unit/Integration Tests

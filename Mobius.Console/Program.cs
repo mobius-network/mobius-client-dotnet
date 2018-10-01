@@ -72,9 +72,9 @@ namespace Mobius.Console
 
             bool validToken = token.validate();
 
-            System.Console.WriteLine($"Token Validated: {validToken}");
+            System.Console.WriteLine($"Token is valid: {validToken}");
 
-            string tokenHash = token.hash("hex");
+            string tokenHash = token.hash();
 
             System.Console.WriteLine($"Token Hash: {tokenHash}");
             System.Console.WriteLine("---------------------------------");

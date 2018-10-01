@@ -5,24 +5,20 @@ namespace Mobius.Library.Auth
 {
     public class Challenge
     {
-        /**
-        * Generates challenge transaction signed by developers private key.
-        * @param {string} developerSecret - Developers private key
-        * @param {number} expireIn - Session expiration time in seconds from now. Default is Client.challengeExpiresIn.
-        * @returns {string} base64-encoded transaction envelope
-        */
+        ///<summary>Generates challenge transaction signed by developers private key.</summary>
+        ///<param name="developerSecret">Developers secret seed</param>
+        ///<param name="expireIn">Session expiration time in seconds from now. Default is Client.challengeExpiresIn.</param>
+        ///<returns>Returns base64-encoded transaction envelope</returns>
         public string Call(byte[] developerSecret, int expireIn = 0) {
             if (expireIn == 0) expireIn = Client.challengeExpiresIn;
 
             KeyPair keypair = _keypair(developerSecret);
             Account account = new Account(keypair, _randomSequence());
 
-
             PaymentOperation operation = 
                 new PaymentOperation.Builder(keypair, new AssetTypeNative(), "0.000001")
                     .SetSourceAccount(KeyPair.Random())
                     .Build();
-
 
             Transaction tx = new Transaction.Builder(account)
                 .AddMemo(memo())
@@ -35,29 +31,20 @@ namespace Mobius.Library.Auth
             return tx.ToEnvelopeXdrBase64();
         }
 
-        /**
-        * @private
-        * @param {string} developerSecret - Developers private key
-        * @returns {StellarSdk.Keypair} StellarSdk.Keypair
-        */
+        ///<param name="developerSecret">Developers secret seed</param>
+        ///<returns>Returns developer keypair</returns>
         private KeyPair _keypair(byte[] developerSecret) {
             return KeyPair.FromSecretSeed(developerSecret);
         }
 
-        /**
-        * @private
-        * @returns {number} Random sequence number
-        */
+        ///<returns>Returns a random sequence number</returns>
         private long _randomSequence() {
             Random rnd = new Random();
             return (long)(99999999 - Math.Floor((decimal)rnd.Next() * 65536));
         }
 
-        /**
-        * @private
-        * @param {number} expireIn - session expiration time in seconds from now
-        * @returns {object} Time bounds (`minTime` and `maxTime`)
-        */
+        ///<param name="expireIn">session expiration time in seconds from now</param>
+        ///<returns>Returns timebounds, (`minTime` and `maxTime`)</returns>
         private TimeBounds _buildTimeBounds(int expireIn) {
             long minTime = (long)Math.Floor((double)new DateTime().Millisecond / 1000);
             long maxTime = (long)Math.Floor((double)new DateTime().Millisecond / 1000 + expireIn);
@@ -65,10 +52,7 @@ namespace Mobius.Library.Auth
             return new TimeBounds(minTime, maxTime);
         }
 
-        /**
-        * @private
-        * @returns {StellarSdk.Memo} Auth transaction memo
-        */
+        ///<returns>Returns auth transaction memo</returns>
         private dynamic memo() {
             return Memo.Text("Mobius authentication");
         }

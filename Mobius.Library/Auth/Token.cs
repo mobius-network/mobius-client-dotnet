@@ -9,11 +9,16 @@ namespace Mobius.Library.Auth
 {
     public class Token
     {
-        private byte[] _developerSecret { get; set; }
-        private Transaction _tx { get; set; }
-        private byte[] _address { get; set; }
-        private KeyPair _keypair { get; set; }
-        private KeyPair _theirKeypair { get; set; }
+        private byte[] _developerSecret;
+        private Transaction _tx;
+        private byte[] _address;
+        private KeyPair _keypair;
+        private KeyPair _theirKeypair;
+        
+        ///<summary>Checks challenge transaction signed by user on developer's side.</summary>
+        ///<param name="developerSecret">Developer secret seed</param>
+        ///<param name="xdr">Challenge transaction xdr</param>
+        ///<param name="address">User public key</param>
         public Token(byte[] developerSecret, string xdr, byte[] address)
         {
             _developerSecret = developerSecret;
@@ -21,10 +26,8 @@ namespace Mobius.Library.Auth
             _address = address;
         }
 
-        /**
-        * Returns time bounds for given transaction
-        * @returns {StellarSdk.xdr.TimeBounds} Time bounds for given transaction (`minTime` and `maxTime`)
-        */
+        ///<summary>Verify and return timebounds for the given transaction</summary>
+        ///<returns>Returns timebounds for given transaction (`minTime` and `maxTime`)</returns>
         public TimeBounds timeBounds() {
             TimeBounds timebounds = _tx.TimeBounds;
 
@@ -35,19 +38,15 @@ namespace Mobius.Library.Auth
             return timebounds;
         }
 
-        /**
-        * Returns address this token is issued for.
-        * @returns {string} Address.
-        */
+        ///<summary>Returns address this token is issued for.</summary>
+        ///<returns>Returns the keypairs public key</returns>
         public byte[] address() {
             return _getKeypair().PublicKey;
         }
 
-        /**
-        * Validates transaction signed by developer and user.
-        * @param {boolean} [strict=true] - if true, checks that lower time limit is within Mobius::Client.strict_interval seconds from now
-        * @returns {boolean} true if transaction is valid, raises exception otherwise
-        */
+        ///<summary>Validates transaction signed by developer and user.</summary>
+        ///<param name="strict">[strict=true] - if true, checks that lower time limit is within Mobius.Client.strictInterval seconds from now</param>
+        ///<returns>Returns true if transaction is valid, raises exception otherwise</returns>
         public Boolean validate(Boolean strict = true) {
             if (!_signedCorrectly()) {
                 throw new Exception("Wrong challenge transaction signature");
@@ -66,11 +65,9 @@ namespace Mobius.Library.Auth
             return true;
         }
 
-        /**
-        * @param {string} format="binary" - format for output data
-        * @returns {Buffer|string} depends on `format` param passed
-        */
-        public string hash(string format = "binary") {
+        ///<summary>Validate token and return transaction hash as string</summary>
+        ///<returns>Returns transaction hash bytes to hex as string.</returns>
+        public string hash() {
             validate();
 
             byte[] hash = _tx.Hash();
@@ -78,20 +75,16 @@ namespace Mobius.Library.Auth
             return Util.BytesToHex(hash);
         }
 
-        /**
-        * @private
-        * @returns {StellarSdk.Keypair} StellarSdk.Transaction object for given Developer private key
-        */
+        ///<summary>Private: Returns keypair or keypair from a secret seed</summary>
+        ///<returns>keypair object for given Developer private key</returns>
         private KeyPair _getKeypair() {
             _keypair = _keypair != null ? _keypair : KeyPair.FromSecretSeed(_developerSecret);
 
             return _keypair;
         }
 
-        /**
-        * @private
-        * @returns {StellarSdk.Keypair} StellarSdk.Transaction object of user being authorized
-        */
+        ///<summary>Private: Returns user keypair or keypair from a public key</summary>
+        ///<returns>keypair object of user being authorized</returns>
         private KeyPair _getTheirKeypair() {
             _theirKeypair =
             _theirKeypair != null ? _theirKeypair : KeyPair.FromPublicKey(_address);
@@ -99,10 +92,7 @@ namespace Mobius.Library.Auth
             return _theirKeypair;
         }
 
-        /**
-        * @private
-        * @returns {boolean} true if transaction is correctly signed by user and developer
-        */
+        ///<returns>Returns true if transaction is correctly signed by user and developer</returns>
         private Boolean _signedCorrectly() {
             bool isSignedByDeveloper = new Keypair().verify(_tx, _getKeypair());
             bool isSignedByUser = new Keypair().verify(_tx, _getTheirKeypair());
@@ -110,11 +100,9 @@ namespace Mobius.Library.Auth
             return isSignedByDeveloper && isSignedByUser;
         }
 
-        /**
-        * @private
-        * @param {StellarSdk.xdr.TimeBounds} timeBounds - Time bounds for given transaction
-        * @returns {boolean} true if current time is within transaction time bounds
-        */
+        ///<summary>Private: Checks if current time is within transaction timebounds</summary>
+        ///<param name="timeBounds">Timebounds for given transaction</param>
+        ///<returns>Returns true if current time is within transaction time bounds</returns>
         private Boolean _timeNowCovers(TimeBounds timeBounds) {
             long now = (long)Math.Floor((double)new DateTime().Millisecond / 1000);
 
@@ -124,10 +112,8 @@ namespace Mobius.Library.Auth
             );
         }
 
-        /**
-        * @param {StellarSdk.xdr.TimeBounds} timeBounds - Time bounds for given transaction
-        * @returns {boolean} true if transaction is created more than 10 secods from now
-        */
+        ///<param name="timeBounds">Timebounds for given transaction</param>
+        ///<returns>Returns true if transaction is created more than 10 secods from now</returns>
         public Boolean _tooOld(TimeBounds timeBounds) {
             long now = (long)Math.Floor((double)new DateTime().Millisecond/ 1000);
             int strictInterval = new Client().strictInterval;

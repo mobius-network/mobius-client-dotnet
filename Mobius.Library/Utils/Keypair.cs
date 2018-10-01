@@ -7,9 +7,9 @@ namespace Mobius.Library.Utils
     public class Keypair
     {
         ///<summary>Verify given keypair is a signer on a given transaction.</summary>
-        ///<param name="tx">Transaction: Transaction to verify</param>
-        ///<param name="keypair">KeyPair: Keypair object for given Developer public key</param>
-        ///<returns>Boolean: if given transaction is signed using specified keypair</returns>
+        ///<param name="tx">Transaction to verify</param>
+        ///<param name="keypair">Keypair object</param>
+        ///<returns>Returns true if given transaction is signed using specified keypair</returns>
         public Boolean verify(Transaction tx, KeyPair keypair) {
             var signatures = tx.Signatures;
             var hash = tx.Hash();
