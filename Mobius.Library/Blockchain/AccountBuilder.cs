@@ -12,7 +12,6 @@ namespace Mobius.Library.Blockchain
         ///<returns>Promise returns Blockchain.Accont instance</returns>
         async public Task<Account> Build(KeyPair keypair)
         {
-
             string accountId = StrKey.EncodeStellarAccountId(keypair.PublicKey);
 
             // Fixed for now....
