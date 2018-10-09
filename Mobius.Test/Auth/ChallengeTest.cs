@@ -9,7 +9,6 @@ namespace Mobius.Test.Auth
 	public class ChallengeFixture
 	{
         public KeyPair keypair = KeyPair.Random();
-
         public DateTime date = new DateTime();
         public Transaction tx { get; private set; }
 
@@ -19,10 +18,10 @@ namespace Mobius.Test.Auth
             tx = Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(keypair.SeedBytes));
         }
 	}
-	public class Challenge: IClassFixture<ChallengeFixture>
+	public class ChallengeTest: IClassFixture<ChallengeFixture>
     {
         ChallengeFixture _fixture;
-        public Challenge(ChallengeFixture fixture)
+        public ChallengeTest(ChallengeFixture fixture)
         {
             _fixture = fixture;
         }

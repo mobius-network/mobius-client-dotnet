@@ -5,7 +5,7 @@ using stellar_dotnet_sdk;
 
 namespace Mobius.Test
 {
-    public class Client
+    public class ClientTest
     {
         [Fact]
         public void ShouldUseTestNetwork()
