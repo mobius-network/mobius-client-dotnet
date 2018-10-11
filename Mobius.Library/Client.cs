@@ -12,7 +12,7 @@ namespace Mobius.Library {
             { "PUBLIC", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH" },
             { "TESTNET", "GDRWBLJURXUKM4RWDZDTPJNX6XBYFO3PSE4H4GPUL6H6RCUQVKTSD4AT" }
         };
-        private static Dictionary<string, string> Urls = new Dictionary<string, string>() {
+        public static Dictionary<string, string> Urls = new Dictionary<string, string>() {
             { "TESTNET", "https://horizon-testnet.stellar.org" },
             { "PUBLIC", "https://horizon.stellar.org" }
         };

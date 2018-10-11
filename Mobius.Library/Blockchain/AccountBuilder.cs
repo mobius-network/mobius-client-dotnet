@@ -14,8 +14,15 @@ namespace Mobius.Library.Blockchain
         {
             string accountId = Stellar.StrKey.EncodeStellarAccountId(keypair.PublicKey);
 
-            // Fixed for now....
-            Uri uri = new Uri($"https://horizon-testnet.stellar.org/accounts/{accountId}");
+            // URI must manually be built up for now due to bug in stellar_dotnet_sdk.
+            // Commit for bug pushed here: https://github.com/elucidsoft/dotnet-stellar-sdk/commit/e1577f423e8de8bea5ad007de08a4e464cf0684f
+            // Upon next release server.Accounts.Account() will not need to supply the entire URI.
+            Client client = new Client();
+            string endpoint = Stellar.Network.IsPublicNetwork(client.Network) 
+                ? Client.Urls["PUBLIC"]
+                : Client.Urls["TESTNET"];
+
+            Uri uri = new Uri($"{endpoint}/{accountId}");
 
             Stellar.Server server = new Client().HorizonClient;
 
