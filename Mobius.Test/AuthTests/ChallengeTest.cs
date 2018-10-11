@@ -4,7 +4,7 @@ using Mobius.Library;
 using stellar_dotnet_sdk;
 using stellar_dotnet_sdk.responses;
 
-namespace Mobius.Test.Auth
+namespace Mobius.Test.AuthTests
 {
 	public class ChallengeFixture
 	{
@@ -48,7 +48,7 @@ namespace Mobius.Test.Auth
         [Fact]
         public void ContainsCorrectMinimumTimeBounds()
         {
-            long timeNow = (long)Math.Floor((double)new DateTime().Millisecond / 1000);
+            long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds();
 
             Assert.Equal(_fixture.tx.TimeBounds.MinTime.ToString(), timeNow.ToString());
         }
@@ -56,7 +56,7 @@ namespace Mobius.Test.Auth
         [Fact]
         public void ContainsCorrectMaximumTimeBounds()
         {
-            long timeNow = (long)Math.Floor(((double)new DateTime().Millisecond / 1000) + Library.Client.challengeExpiresIn);
+            long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds() + Library.Client.challengeExpiresIn;
 
             Assert.Equal(_fixture.tx.TimeBounds.MaxTime.ToString(), timeNow.ToString());
         }
@@ -65,7 +65,7 @@ namespace Mobius.Test.Auth
         public void ContainsCorrectCustomTimeBounds()
         {
             Transaction tx = Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(_fixture.keypair.SeedBytes, 100));
-            long timeNow = (long)Math.Floor(((double)new DateTime().Millisecond / 1000) + 100);
+            long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds() + 100;
 
             Assert.Equal(tx.TimeBounds.MaxTime.ToString(), timeNow.ToString());
         }

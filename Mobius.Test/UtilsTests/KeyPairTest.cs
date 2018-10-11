@@ -1,11 +1,11 @@
 using System;
+using System.Threading.Tasks;
 using Xunit;
 using Mobius.Library;
 using Stellar = stellar_dotnet_sdk;
 using Stellar_Responses = stellar_dotnet_sdk.responses;
-using System.Threading.Tasks;
 
-namespace Mobius.Test.Utils
+namespace Mobius.Test.UtilsTests
 {
     public class KeyPairFixture
 	{
@@ -40,13 +40,10 @@ namespace Mobius.Test.Utils
             long randomSequence = (long)(99999999 - Math.Floor((decimal)new Random().Next() *  65536));
 
             Stellar.Account account = new Stellar.Account(keypair, randomSequence);
-
             Stellar.Transaction.Builder txBuilder = new Stellar.Transaction.Builder(account);
 
             Stellar_Responses.AssetResponse asset = await new Library.Client().StellarAsset();
-
             Stellar.Operation op = new Stellar.PaymentOperation.Builder(keypair, asset.Asset, "0.000001").Build();
-
             Stellar.Transaction tx = txBuilder.AddOperation(op).Build();
             
             tx.Sign(keypair);

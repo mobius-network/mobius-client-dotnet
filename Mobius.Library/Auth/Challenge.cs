@@ -46,8 +46,8 @@ namespace Mobius.Library.Auth
         ///<param name="expireIn">session expiration time in seconds from now</param>
         ///<returns>Returns timebounds, (`minTime` and `maxTime`)</returns>
         private TimeBounds _buildTimeBounds(int expireIn) {
-            long minTime = (long)Math.Floor((double)new DateTime().Millisecond / 1000);
-            long maxTime = (long)Math.Floor((double)new DateTime().Millisecond / 1000 + expireIn);
+            long minTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+            long maxTime = DateTimeOffset.Now.ToUnixTimeSeconds() + expireIn;
 
             return new TimeBounds(minTime, maxTime);
         }

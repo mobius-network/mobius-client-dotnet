@@ -104,7 +104,7 @@ namespace Mobius.Library.Auth
         ///<param name="timeBounds">Timebounds for given transaction</param>
         ///<returns>Returns true if current time is within transaction time bounds</returns>
         private Boolean _timeNowCovers(TimeBounds timeBounds) {
-            long now = (long)Math.Floor((double)new DateTime().Millisecond / 1000);
+            long now = DateTimeOffset.Now.ToUnixTimeSeconds();
 
             return (
                 now >= timeBounds.MinTime &&
@@ -115,10 +115,10 @@ namespace Mobius.Library.Auth
         ///<param name="timeBounds">Timebounds for given transaction</param>
         ///<returns>Returns true if transaction is created more than 10 secods from now</returns>
         public Boolean _tooOld(TimeBounds timeBounds) {
-            long now = (long)Math.Floor((double)new DateTime().Millisecond/ 1000);
+            long now = DateTimeOffset.Now.ToUnixTimeSeconds();
             int strictInterval = new Client().strictInterval;
 
-            return now > timeBounds.MinTime + strictInterval;
+            return now > (timeBounds.MinTime + strictInterval);
         }
     }
 }

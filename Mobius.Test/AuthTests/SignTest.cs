@@ -3,7 +3,7 @@ using Xunit;
 using Mobius.Library;
 using stellar_dotnet_sdk;
 
-namespace Mobius.Test.Auth
+namespace Mobius.Test.AuthTests
 {
     public class SignFixture
     {
