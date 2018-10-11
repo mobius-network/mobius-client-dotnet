@@ -2,19 +2,19 @@ using System;
 using Xunit;
 using Mobius.Library;
 using Stellar = stellar_dotnet_sdk;
-using Stellar_Responses = stellar_dotnet_sdk.responses;
 
 namespace Mobius.Test.AuthTests
 {
     public class TokenFixture
-	{
+    {
         public Stellar.KeyPair userKeypair = Stellar.KeyPair.Random();
         public Stellar.KeyPair devKeypair = Stellar.KeyPair.Random();
         public TokenFixture()
         {
             Stellar.Network.UseTestNetwork();
         }
-	}
+    }
+
     public class TokenTest: IClassFixture<TokenFixture>
     {
         TokenFixture _fixture;

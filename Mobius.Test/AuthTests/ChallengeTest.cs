@@ -1,24 +1,23 @@
 using System;
 using Xunit;
 using Mobius.Library;
-using stellar_dotnet_sdk;
-using stellar_dotnet_sdk.responses;
+using Stellar = stellar_dotnet_sdk;
 
 namespace Mobius.Test.AuthTests
 {
-	public class ChallengeFixture
-	{
-        public KeyPair keypair = KeyPair.Random();
-        public DateTime date = new DateTime();
-        public Transaction tx { get; private set; }
+    public class ChallengeFixture
+    {
+        public Stellar.KeyPair keypair = Stellar.KeyPair.Random();
+        public Stellar.Transaction tx { get; private set; }
 
         public ChallengeFixture()
         {
-            Network.UseTestNetwork();
-            tx = Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(keypair.SeedBytes));
+            Stellar.Network.UseTestNetwork();
+            tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(keypair.SeedBytes));
         }
-	}
-	public class ChallengeTest: IClassFixture<ChallengeFixture>
+    }
+    
+    public class ChallengeTest: IClassFixture<ChallengeFixture>
     {
         ChallengeFixture _fixture;
         public ChallengeTest(ChallengeFixture fixture)
@@ -35,7 +34,8 @@ namespace Mobius.Test.AuthTests
         [Fact]
         public void ContainsMemo()
         {
-            MemoText memo = Memo.Text("Mobius authentication");
+            Stellar.MemoText memo = Stellar.Memo.Text("Mobius authentication");
+            
             Assert.Equal(memo, _fixture.tx.Memo);
         }
 
@@ -64,7 +64,7 @@ namespace Mobius.Test.AuthTests
         [Fact]
         public void ContainsCorrectCustomTimeBounds()
         {
-            Transaction tx = Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(_fixture.keypair.SeedBytes, 100));
+            Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(_fixture.keypair.SeedBytes, 100));
             long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds() + 100;
 
             Assert.Equal(tx.TimeBounds.MaxTime.ToString(), timeNow.ToString());
