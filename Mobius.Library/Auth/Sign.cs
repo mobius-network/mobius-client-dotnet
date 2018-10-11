@@ -1,6 +1,6 @@
 using System;
-using stellar_dotnet_sdk;
 using Mobius.Library.Utils;
+using Stellar = stellar_dotnet_sdk;
 
 namespace Mobius.Library.Auth
 {
@@ -13,9 +13,9 @@ namespace Mobius.Library.Auth
         ///<returns>Returns base64-encoded transaction envelope</returns>
         public string Call(byte[] userSecret, string xdr, byte[] address)
         {
-            Transaction tx = Transaction.FromEnvelopeXdr(xdr);
-            KeyPair keypair = this._keypair(userSecret);
-            KeyPair developerKeypair = this._developerKeypair(address);
+            Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(xdr);
+            Stellar.KeyPair keypair = this._keypair(userSecret);
+            Stellar.KeyPair developerKeypair = this._developerKeypair(address);
 
             this._validate(developerKeypair, tx);
 
@@ -27,22 +27,22 @@ namespace Mobius.Library.Auth
         ///<summary>Private: returns keypair from secret seed</summary>
         ///<param name="userSecret">Private seed</param>
         ///<returns>Returns keypair from given secret seed</returns>
-        private KeyPair _keypair(byte[] userSecret) {
-            return KeyPair.FromSecretSeed(userSecret);
+        private Stellar.KeyPair _keypair(byte[] userSecret) {
+            return Stellar.KeyPair.FromSecretSeed(userSecret);
         }
 
         ///<summary>Private: returns keypair from public key</summary>
         ///<param name="address">Developers public key</param>
         ///<returns>Returns keypair from given users public key</returns>
-        private KeyPair _developerKeypair(byte[] address) {
-            return KeyPair.FromPublicKey(address);
+        private Stellar.KeyPair _developerKeypair(byte[] address) {
+            return Stellar.KeyPair.FromPublicKey(address);
         }
 
         ///<summary>Private: Validates transaction is signed by developer.</summary>
         ///<param name="keypair">keypair object for given developer public key</param>
         ///<param name="tx">Transaction to verify</param>
         ///<returns>Returns true is transaction is valid, throws error otherwise</returns>
-        private Boolean _validate(KeyPair keypair, Transaction tx) {
+        private Boolean _validate(Stellar.KeyPair keypair, Stellar.Transaction tx) {
             Boolean isValid = new Utils.Keypair().verify(tx, keypair);
 
             if (!isValid) {

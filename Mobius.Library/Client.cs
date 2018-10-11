@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using stellar_dotnet_sdk;
-using stellar_dotnet_sdk.responses;
-using stellar_dotnet_sdk.responses.page;
+using Stellar = stellar_dotnet_sdk;
+using StellarResponses = stellar_dotnet_sdk.responses;
+using StellarRequests = stellar_dotnet_sdk.responses.page;
 
 namespace Mobius.Library {
     public class Client {
@@ -17,9 +17,9 @@ namespace Mobius.Library {
             { "PUBLIC", "https://horizon.stellar.org" }
         };
         private const string _assetCode = "MOBI";
-        private static Server _horizonClient;
-        private static Network _network;
-        private static AssetResponse _stellarAsset;
+        private static Stellar.Server _horizonClient;
+        private static Stellar.Network _network;
+        private static StellarResponses.AssetResponse _stellarAsset;
 
         ///<summary>In strict mode, session must be not older than 10 seconds from now</summary>
         ///<returns>int strict interval value in seconds (10 by default)</returns>
@@ -29,9 +29,9 @@ namespace Mobius.Library {
         public const int challengeExpiresIn = 60 * 60 * 24;
 
         public Client() {
-            if (Network.Current == null) SetNetwork("TESTNET");
+            if (Stellar.Network.Current == null) SetNetwork("TESTNET");
             
-            _network = Network.Current;
+            _network = Stellar.Network.Current;
         }
 
         ///<returns>Returns Mobius API host</returns>
@@ -40,8 +40,8 @@ namespace Mobius.Library {
         ///<returns>Returns the Asset Issuers Public or Testnet Key</returns>
         public string GetAssetIssuer() {
             string assetIssuer =
-                Network.Current != null && 
-                Network.IsPublicNetwork(Network.Current)
+                Stellar.Network.Current != null && 
+                Stellar.Network.IsPublicNetwork(Stellar.Network.Current)
                     ? Issuers["PUBLIC"]
                     : Issuers["TESTNET"];
 
@@ -50,12 +50,12 @@ namespace Mobius.Library {
 
         ///<summary>Get Stellar Asset instance of asset used for payments</summary>
         ///<returns>Returns StellarSDK Asset instance of asset used for payments</returns>
-        async public Task<AssetResponse> StellarAsset(string assetIssuer = null, string assetCode = _assetCode) {
+        async public Task<StellarResponses.AssetResponse> StellarAsset(string assetIssuer = null, string assetCode = _assetCode) {
             if (_stellarAsset != null) return _stellarAsset;
 
             if (assetIssuer == null) assetIssuer = GetAssetIssuer();
 
-            Page<AssetResponse> responses = 
+            StellarRequests.Page<StellarResponses.AssetResponse> responses = 
                 await HorizonClient.Assets.AssetIssuer(assetIssuer).AssetCode(assetCode).Execute();
 
             _stellarAsset = responses.Records.FirstOrDefault();
@@ -66,40 +66,40 @@ namespace Mobius.Library {
         ///<summary>Set Stellar network to use</summary>
         ///<param name="value">string: network to use</param>
         public void SetNetwork(string value = "TESTNET") {
-            if (value == "TESTNET") Network.UseTestNetwork();
-            else if (value == "PUBLIC") Network.UsePublicNetwork();
+            if (value == "TESTNET") Stellar.Network.UseTestNetwork();
+            else if (value == "PUBLIC") Stellar.Network.UsePublicNetwork();
             else throw new Exception("Must provide value network. TESTNET or PUBLIC");
 
-            _network = Network.Current;
+            _network = Stellar.Network.Current;
         }
 
         ///<summary>Get current network instance</summary>
         ///<returns>Returns StellarSdk.Network instance</returns>
-        public Network Network
+        public Stellar.Network Network
         {
             get { return _network; }
         }
 
         ///<summary>Get StellarSdk.Server instance</summary>
         ///<returns>Returns StellarSdk.Server instance</returns>
-        public Server HorizonClient {
+        public Stellar.Server HorizonClient {
             get {
                 if (_horizonClient != null) return _horizonClient;
 
                 _horizonClient =
-                    Network.Current != null && 
-                    Network.IsPublicNetwork(Network.Current)
-                        ? new Server(Urls["PUBLIC"])
-                        : new Server(Urls["TESTNET"]);
+                    Stellar.Network.Current != null && 
+                    Stellar.Network.IsPublicNetwork(Stellar.Network.Current)
+                        ? new Stellar.Server(Urls["PUBLIC"])
+                        : new Stellar.Server(Urls["TESTNET"]);
 
                 return _horizonClient;
             }
         }
 
         ///<summary>Get Stellar Account Type for this account</summary>
-        public stellar_dotnet_sdk.Account GetStellarAccount(Blockchain.Account account)
+        public Stellar.Account GetStellarAccount(Blockchain.Account account)
         {
-            return new stellar_dotnet_sdk.Account(account.KeyPair(), null); // null sequnece number for now
+            return new Stellar.Account(account.KeyPair(), null); // null sequnece number for now
         }
     }
 }

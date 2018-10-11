@@ -23,11 +23,6 @@ namespace Mobius.Console
             string xdr = GetChallenge(_devKeypair.SeedBytes);
             string signedXdr = SignChallenge(xdr);
             string tokenHash = GenerateAuthToken(_devKeypair.SeedBytes, signedXdr, _userKeypair.PublicKey);
-
-            // Fund With Friendbot first, returning errors for empty unfound accounts via horizon.
-            // System.Console.WriteLine(StrKey.EncodeStellarAccountId(_userKeypair.PublicKey));
-            // App app = new AppBuilder().Build(_devKeypair.SeedBytes, _userKeypair.PublicKey).Result;
-            // System.Console.WriteLine(app.userBalance().Result);
         }
 
         static KeyPair RandomKeypair()

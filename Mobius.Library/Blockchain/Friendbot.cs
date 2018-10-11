@@ -1,6 +1,6 @@
 using System;
-using stellar_dotnet_sdk;
-using stellar_dotnet_sdk.requests;
+using Stellar = stellar_dotnet_sdk;
+using StellarRequests = stellar_dotnet_sdk.requests;
 
 namespace Mobius.Library.Blockchain
 {
@@ -9,7 +9,7 @@ namespace Mobius.Library.Blockchain
         ///<summary>Fund keypair and get response</summary>
         ///<param name="keypair">Keypair of account to fund</param>
         ///<returns>Promise returns response of funded account</returns>
-        public FriendBotRequestBuilder Call(KeyPair keypair) {
+        public StellarRequests.FriendBotRequestBuilder Call(Stellar.KeyPair keypair) {
             return new Client().HorizonClient.TestNetFriendBot.FundAccount(keypair);
         }
     }

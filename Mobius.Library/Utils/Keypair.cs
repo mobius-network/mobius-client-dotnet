@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using stellar_dotnet_sdk;
+using Stellar = stellar_dotnet_sdk;
 
 namespace Mobius.Library.Utils
 {
@@ -10,7 +10,7 @@ namespace Mobius.Library.Utils
         ///<param name="tx">Transaction to verify</param>
         ///<param name="keypair">Keypair object</param>
         ///<returns>Returns true if given transaction is signed using specified keypair</returns>
-        public Boolean verify(Transaction tx, KeyPair keypair) {
+        public Boolean verify(Stellar.Transaction tx, Stellar.KeyPair keypair) {
             var signatures = tx.Signatures;
             var hash = tx.Hash();
 

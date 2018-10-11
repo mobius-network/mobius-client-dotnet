@@ -3,17 +3,17 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using Mobius.Library.Utils;
-using stellar_dotnet_sdk;
+using Stellar = stellar_dotnet_sdk;
 
 namespace Mobius.Library.Auth
 {
     public class Token
     {
         private byte[] _developerSecret;
-        private Transaction _tx;
+        private Stellar.Transaction _tx;
         private byte[] _address;
-        private KeyPair _keypair;
-        private KeyPair _theirKeypair;
+        private Stellar.KeyPair _keypair;
+        private Stellar.KeyPair _theirKeypair;
         
         ///<summary>Checks challenge transaction signed by user on developer's side.</summary>
         ///<param name="developerSecret">Developer secret seed</param>
@@ -22,14 +22,14 @@ namespace Mobius.Library.Auth
         public Token(byte[] developerSecret, string xdr, byte[] address)
         {
             _developerSecret = developerSecret;
-            _tx = Transaction.FromEnvelopeXdr(xdr);
+            _tx = Stellar.Transaction.FromEnvelopeXdr(xdr);
             _address = address;
         }
 
         ///<summary>Verify and return timebounds for the given transaction</summary>
         ///<returns>Returns timebounds for given transaction (`minTime` and `maxTime`)</returns>
-        public TimeBounds timeBounds() {
-            TimeBounds timebounds = _tx.TimeBounds;
+        public Stellar.TimeBounds timeBounds() {
+            Stellar.TimeBounds timebounds = _tx.TimeBounds;
 
             if (timebounds == null) {
                 throw new Exception("Wrong challenge transaction structure");
@@ -52,7 +52,7 @@ namespace Mobius.Library.Auth
                 throw new Exception("Wrong challenge transaction signature");
             }
 
-            TimeBounds bounds = timeBounds();
+            Stellar.TimeBounds bounds = timeBounds();
 
             if (!_timeNowCovers(bounds)) {
                 throw new Exception("Challenge transaction expired");
@@ -72,22 +72,22 @@ namespace Mobius.Library.Auth
 
             byte[] hash = _tx.Hash();
 
-            return Util.BytesToHex(hash);
+            return Stellar.Util.BytesToHex(hash);
         }
 
         ///<summary>Private: Returns keypair or keypair from a secret seed</summary>
         ///<returns>keypair object for given Developer private key</returns>
-        private KeyPair _getKeypair() {
-            _keypair = _keypair != null ? _keypair : KeyPair.FromSecretSeed(_developerSecret);
+        private Stellar.KeyPair _getKeypair() {
+            _keypair = _keypair != null ? _keypair : Stellar.KeyPair.FromSecretSeed(_developerSecret);
 
             return _keypair;
         }
 
         ///<summary>Private: Returns user keypair or keypair from a public key</summary>
         ///<returns>keypair object of user being authorized</returns>
-        private KeyPair _getTheirKeypair() {
+        private Stellar.KeyPair _getTheirKeypair() {
             _theirKeypair =
-            _theirKeypair != null ? _theirKeypair : KeyPair.FromPublicKey(_address);
+            _theirKeypair != null ? _theirKeypair : Stellar.KeyPair.FromPublicKey(_address);
 
             return _theirKeypair;
         }
@@ -103,7 +103,7 @@ namespace Mobius.Library.Auth
         ///<summary>Private: Checks if current time is within transaction timebounds</summary>
         ///<param name="timeBounds">Timebounds for given transaction</param>
         ///<returns>Returns true if current time is within transaction time bounds</returns>
-        private Boolean _timeNowCovers(TimeBounds timeBounds) {
+        private Boolean _timeNowCovers(Stellar.TimeBounds timeBounds) {
             long now = DateTimeOffset.Now.ToUnixTimeSeconds();
 
             return (
@@ -114,7 +114,7 @@ namespace Mobius.Library.Auth
 
         ///<param name="timeBounds">Timebounds for given transaction</param>
         ///<returns>Returns true if transaction is created more than 10 secods from now</returns>
-        public Boolean _tooOld(TimeBounds timeBounds) {
+        public Boolean _tooOld(Stellar.TimeBounds timeBounds) {
             long now = DateTimeOffset.Now.ToUnixTimeSeconds();
             int strictInterval = new Client().strictInterval;
 

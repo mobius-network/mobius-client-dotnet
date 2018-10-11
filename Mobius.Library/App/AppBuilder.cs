@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Mobius.Library.Blockchain;
-using stellar_dotnet_sdk;
+using Stellar = stellar_dotnet_sdk;
 
 namespace Mobius.Library.App
 {
@@ -13,10 +13,10 @@ namespace Mobius.Library.App
         ///<returns>Promise returns new app instance</returns>
         async public Task<App> Build(byte[] developerSecret, byte[] address)
         {
-            KeyPair developerKeypair = KeyPair.FromSecretSeed(developerSecret);
+            Stellar.KeyPair developerKeypair = Stellar.KeyPair.FromSecretSeed(developerSecret);
             Blockchain.Account developerAccount = await new AccountBuilder().Build(developerKeypair);
 
-            KeyPair userKeypair = KeyPair.FromPublicKey(address);
+            Stellar.KeyPair userKeypair = Stellar.KeyPair.FromPublicKey(address);
             Blockchain.Account userAccount = await new AccountBuilder().Build(userKeypair);
 
             return new App(developerAccount, userAccount);

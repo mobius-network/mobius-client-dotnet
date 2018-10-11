@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using stellar_dotnet_sdk;
-using stellar_dotnet_sdk.responses;
+using Stellar = stellar_dotnet_sdk;
+using StellarResponses = stellar_dotnet_sdk.responses;
 
 namespace Mobius.Library.Blockchain
 {
@@ -11,16 +11,16 @@ namespace Mobius.Library.Blockchain
         ///<param name="keypair">Account keypair</para>
         ///<param name="asset">(optional) - default to Client.StellarAsset()</param>
         ///<returns>Promise returns submitted transaction response.</returns>
-        async public Task<SubmitTransactionResponse> Call(KeyPair keypair, AssetResponse asset = null) {
+        async public Task<StellarResponses.SubmitTransactionResponse> Call(Stellar.KeyPair keypair, StellarResponses.AssetResponse asset = null) {
             Client client = new Client();
 
             if (asset == null) asset = await client.StellarAsset();
 
             Blockchain.Account account = await new AccountBuilder().Build(keypair);
 
-            stellar_dotnet_sdk.Account _account = client.GetStellarAccount(account);
+            Stellar.Account _account = client.GetStellarAccount(account);
 
-            Transaction tx = _tx(_account, asset.Asset);
+            Stellar.Transaction tx = _tx(_account, asset.Asset);
 
             tx.Sign(account.KeyPair().PrivateKey);
 
@@ -31,13 +31,13 @@ namespace Mobius.Library.Blockchain
         ///<param name="account">Stellar account</param>
         ///<param name="asset">Stellar asset</param>
         ///<returns>Returns transaction.</returns>
-        private Transaction _tx(stellar_dotnet_sdk.Account account, Asset asset) {
+        private Stellar.Transaction _tx(Stellar.Account account, Stellar.Asset asset) {
             string assetXdr = asset.ToXdr().ToString();
-            string opXdrAmount = Operation.ToXdrAmount(assetXdr).ToString();
+            string opXdrAmount = Stellar.Operation.ToXdrAmount(assetXdr).ToString();
 
-            ChangeTrustOperation operation = new ChangeTrustOperation.Builder(asset, opXdrAmount).Build();
+            Stellar.ChangeTrustOperation operation = new Stellar.ChangeTrustOperation.Builder(asset, opXdrAmount).Build();
 
-            return new Transaction.Builder(account).AddOperation(operation).Build();
+            return new Stellar.Transaction.Builder(account).AddOperation(operation).Build();
         }
     }
 }

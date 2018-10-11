@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Stellar = stellar_dotnet_sdk;
+using StellarResponses = stellar_dotnet_sdk.responses;
 
 namespace Mobius.Library.Blockchain
 {
@@ -11,7 +12,7 @@ namespace Mobius.Library.Blockchain
         ///<param name="cosignerKeypair">Cosigner keypair</param>
         ///<param name="weight">Cosigner weight = 1 (default)</param>
         ///<returns>Returns submitted transaction response</returns>
-        public Stellar.responses.SubmitTransactionResponse Call (
+        public StellarResponses.SubmitTransactionResponse Call (
             Stellar.KeyPair keypair, 
             Stellar.xdr.SignerKey cosignerKeypair, 
             int weight = 1
