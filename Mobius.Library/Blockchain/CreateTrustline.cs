@@ -20,7 +20,7 @@ namespace Mobius.Library.Blockchain
 
             Stellar.Account _account = client.GetStellarAccount(account);
 
-            Stellar.Transaction tx = _tx(_account, asset.Asset);
+            Stellar.Transaction tx = this.Tx(_account, asset.Asset);
 
             tx.Sign(account.KeyPair().PrivateKey);
 
@@ -31,7 +31,7 @@ namespace Mobius.Library.Blockchain
         ///<param name="account">Stellar account</param>
         ///<param name="asset">Stellar asset</param>
         ///<returns>Returns transaction.</returns>
-        private Stellar.Transaction _tx(Stellar.Account account, Stellar.Asset asset) {
+        private Stellar.Transaction Tx(Stellar.Account account, Stellar.Asset asset) {
             string assetXdr = asset.ToXdr().ToString();
             string opXdrAmount = Stellar.Operation.ToXdrAmount(assetXdr).ToString();
 

@@ -65,11 +65,11 @@ namespace Mobius.Console
 
             System.Console.WriteLine($"Token Generated");
 
-            bool validToken = token.validate();
+            bool validToken = token.Validate();
 
             System.Console.WriteLine($"Token is valid: {validToken}");
 
-            string tokenHash = token.hash();
+            string tokenHash = token.Hash();
 
             System.Console.WriteLine($"Token Hash: {tokenHash}");
             System.Console.WriteLine("---------------------------------");

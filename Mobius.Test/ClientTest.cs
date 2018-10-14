@@ -12,10 +12,10 @@ namespace Mobius.Test
         {
             Stellar.Network.UseTestNetwork();
 
-            Library.Client _client = new Library.Client();
+            Library.Client client = new Library.Client();
 
-            Assert.Equal(_client.Network.NetworkPassphrase, Stellar.Network.Current.NetworkPassphrase);
-            Assert.False(Stellar.Network.IsPublicNetwork(_client.Network));
+            Assert.Equal(client.Network.NetworkPassphrase, Stellar.Network.Current.NetworkPassphrase);
+            Assert.False(Stellar.Network.IsPublicNetwork(client.Network));
         }
 
         [Fact]
@@ -23,10 +23,10 @@ namespace Mobius.Test
         {
             Stellar.Network.UsePublicNetwork();
 
-            Library.Client _client = new Library.Client();
+            Library.Client client = new Library.Client();
 
-            Assert.Equal(_client.Network.NetworkPassphrase, Stellar.Network.Current.NetworkPassphrase);
-            Assert.True(Stellar.Network.IsPublicNetwork(_client.Network));
+            Assert.Equal(client.Network.NetworkPassphrase, Stellar.Network.Current.NetworkPassphrase);
+            Assert.True(Stellar.Network.IsPublicNetwork(client.Network));
         }
     }
 }

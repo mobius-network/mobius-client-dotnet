@@ -12,60 +12,60 @@ namespace Mobius.Library.Blockchain
 {
     public class Account
     {
-        private StellarResponses.AccountResponse _account;
-        private Stellar.KeyPair _keypair;
-        private Dictionary<string, string> _assetIssuers;
-        private Stellar.Server _clientInstance;
+        private StellarResponses.AccountResponse InnerAccount;
+        private Stellar.KeyPair InnerKeyPair;
+        private Dictionary<string, string> AssetIssuers;
+        private Stellar.Server ClientInstance;
 
         ///<param name="account">Stellar AccountResponse instance</param>
         ///<param name="keypair">Account keypair</param>
         public Account(StellarResponses.AccountResponse account, Stellar.KeyPair keypair)
         {
-            _account = account;
-            _keypair = keypair;
-            _assetIssuers = new Dictionary<string, string>();
-            _clientInstance = new Client().HorizonClient;
+            this.InnerAccount = account;
+            this.InnerKeyPair = keypair;
+            this.AssetIssuers = new Dictionary<string, string>();
+            this.ClientInstance = new Client().HorizonClient;
         }
 
         ///<returns>Keypair for account</returns>
         public Stellar.KeyPair KeyPair()
         {
-            return _keypair;
+            return this.InnerKeyPair;
         }
 
         ///<returns>Account info</returns>
         public StellarResponses.AccountResponse Info()
         {
-            return _account;
+            return this.InnerAccount;
         }
 
         ///<param name="toKeypair">Keypair to check</param>
         ///<returns>Returns true if given keypair is added as cosigner to current account.</returns>
-        public Boolean authorized(Stellar.KeyPair toKeypair) 
+        public Boolean Authorized(Stellar.KeyPair toKeypair) 
         {
-            StellarResponses.Signer signer = _findSigner(toKeypair.PublicKey.ToString());
+            StellarResponses.Signer signer = this.FindSigner(toKeypair.PublicKey.ToString());
 
             return signer != null ? true : false;
         }
 
         ///<param name="asset">Asset to check balance of</param>
         ///<returns>Promise returns balance of given asset - default Client.StellarAsset()</returns>
-        async public Task<decimal> balance(StellarResponses.AssetResponse asset = null) 
+        async public Task<decimal> Balance(StellarResponses.AssetResponse asset = null) 
         {
             if (asset == null) asset = await new Client().StellarAsset();
 
-            StellarResponses.Balance balance = _findBalance(asset);
+            StellarResponses.Balance balance = this.FindBalance(asset);
 
             return decimal.Parse(balance.BalanceString);
         }
 
         ///<param name="asset">Asset to check for trustline of</param>
         ///<returns>Promise returns true if trustline exists for given asset and limit is positive.</returns>
-        async public Task<Boolean> trustlineExists(StellarResponses.AssetResponse asset = null) 
+        async public Task<Boolean> TrustlineExists(StellarResponses.AssetResponse asset = null) 
         {
             if (asset == null) asset = await new Client().StellarAsset();
 
-            StellarResponses.Balance balance = _findBalance(asset);
+            StellarResponses.Balance balance = this.FindBalance(asset);
 
             decimal limit = decimal.Parse(balance.Limit);
 
@@ -74,24 +74,24 @@ namespace Mobius.Library.Blockchain
 
         ///<summary>Invalidates current account information.</summary>
         ///<returns>Promise returns reloaded account.</returns>
-        async public Task<StellarResponses.AccountResponse> reload() 
+        async public Task<StellarResponses.AccountResponse> Reload() 
         {
-            _account = null;
+            this.InnerAccount = null;
 
-            byte[] accountId = _keypair.PublicKey;
+            byte[] accountId = this.InnerKeyPair.PublicKey;
 
             Uri uri = new Uri($"/accounts/{accountId}");
 
-            _account = await _clientInstance.Accounts.Account(uri);
+            this.InnerAccount = await this.ClientInstance.Accounts.Account(uri);
 
-            return _account;
+            return this.InnerAccount;
         }
 
         ///<summary>Private: check if balance matches a given asset.</summary>
         ///<param name="asset">Asset to compare</param>
         ///<param name="balance">Balance entry to compare</param>
         ///<returns>Returns true if balance matches with given asset.</returns>
-        private Boolean _balanceMatches(StellarResponses.AssetResponse asset, StellarResponses.Balance balance) 
+        private Boolean BalanceMatches(StellarResponses.AssetResponse asset, StellarResponses.Balance balance) 
         {
             string assetType = balance.AssetType;
             string assetCode = balance.AssetCode;
@@ -100,29 +100,29 @@ namespace Mobius.Library.Blockchain
             if (asset.Asset.GetType() == "native") 
                 return assetType == "native";
 
-            if (_assetIssuers.ContainsKey(assetCode) == false) 
-                _assetIssuers[assetCode] = asset.AssetIssuer;
+            if (this.AssetIssuers.ContainsKey(assetCode) == false) 
+                this.AssetIssuers[assetCode] = asset.AssetIssuer;
 
             return (
                 assetCode == asset.AssetCode && 
-                assetIssuer == _assetIssuers[assetCode]
+                assetIssuer == this.AssetIssuers[assetCode]
             );
         }
 
         ///<summary>Private: find balance of asset.</summary>
         ///<param name="asset">Asset to find balance of</param>
         ///<returns>Returns matched balance.</returns>
-        private StellarResponses.Balance _findBalance(StellarResponses.AssetResponse asset) 
+        private StellarResponses.Balance FindBalance(StellarResponses.AssetResponse asset) 
         {
-            return _account.Balances.Where(b => _balanceMatches(asset, b)).FirstOrDefault();
+            return this.InnerAccount.Balances.Where(b => this.BalanceMatches(asset, b)).FirstOrDefault();
         }
 
         ///<summary>Private: find signer of account.</summary>
         ///<param name="publicKey">Signer's public key to find</param>
         ///<returns>Returns matched signer.</returns>
-        private StellarResponses.Signer _findSigner(string publicKey) 
+        private StellarResponses.Signer FindSigner(string publicKey) 
         {
-            return _account.Signers.Where(s => s.AccountId == publicKey).FirstOrDefault();
+            return this.InnerAccount.Signers.Where(s => s.AccountId == publicKey).FirstOrDefault();
         }
     }
 }

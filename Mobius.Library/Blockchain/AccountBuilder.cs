@@ -24,9 +24,7 @@ namespace Mobius.Library.Blockchain
 
             Uri uri = new Uri($"{endpoint}/{accountId}");
 
-            Stellar.Server server = new Client().HorizonClient;
-
-            StellarResponses.AccountResponse account = await server.Accounts.Account(uri);
+            StellarResponses.AccountResponse account = await client.HorizonClient.Accounts.Account(uri);
 
             return new Account(account, keypair);
         }   

@@ -16,26 +16,26 @@ namespace Mobius.Library {
             { "TESTNET", "https://horizon-testnet.stellar.org" },
             { "PUBLIC", "https://horizon.stellar.org" }
         };
-        private const string _assetCode = "MOBI";
-        private static Stellar.Server _horizonClient;
-        private static Stellar.Network _network;
-        private static StellarResponses.AssetResponse _stellarAsset;
+        private const string AssetCode = "MOBI";
+        private static Stellar.Server InnerHorizonClient;
+        private static Stellar.Network InnerNetwork;
+        private static StellarResponses.AssetResponse InnerStellarAsset;
 
         ///<summary>In strict mode, session must be not older than 10 seconds from now</summary>
         ///<returns>int strict interval value in seconds (10 by default)</returns>
-        public int strictInterval = 10;
+        public int StrictInterval = 10;
 
         ///<returns>Returns Challenge expiration value in seconds (1d by default)</returns>
-        public const int challengeExpiresIn = 60 * 60 * 24;
+        public const int ChallengeExpiresIn = 60 * 60 * 24;
 
         public Client() {
             if (Stellar.Network.Current == null) SetNetwork("TESTNET");
             
-            _network = Stellar.Network.Current;
+            InnerNetwork = Stellar.Network.Current;
         }
 
         ///<returns>Returns Mobius API host</returns>
-        public string mobiusHost = "https://mobius.network";
+        public string MobiusHost = "https://mobius.network";
 
         ///<returns>Returns the Asset Issuers Public or Testnet Key</returns>
         public string GetAssetIssuer() {
@@ -50,17 +50,17 @@ namespace Mobius.Library {
 
         ///<summary>Get Stellar Asset instance of asset used for payments</summary>
         ///<returns>Returns StellarSDK Asset instance of asset used for payments</returns>
-        async public Task<StellarResponses.AssetResponse> StellarAsset(string assetIssuer = null, string assetCode = _assetCode) {
-            if (_stellarAsset != null) return _stellarAsset;
+        async public Task<StellarResponses.AssetResponse> StellarAsset(string assetIssuer = null, string assetCode = AssetCode) {
+            if (InnerStellarAsset != null) return InnerStellarAsset;
 
             if (assetIssuer == null) assetIssuer = GetAssetIssuer();
 
             StellarRequests.Page<StellarResponses.AssetResponse> responses = 
                 await HorizonClient.Assets.AssetIssuer(assetIssuer).AssetCode(assetCode).Execute();
 
-            _stellarAsset = responses.Records.FirstOrDefault();
+            InnerStellarAsset = responses.Records.FirstOrDefault();
 
-            return _stellarAsset;
+            return InnerStellarAsset;
         }
 
         ///<summary>Set Stellar network to use</summary>
@@ -70,29 +70,29 @@ namespace Mobius.Library {
             else if (value == "PUBLIC") Stellar.Network.UsePublicNetwork();
             else throw new Exception("Must provide value network. TESTNET or PUBLIC");
 
-            _network = Stellar.Network.Current;
+            InnerNetwork = Stellar.Network.Current;
         }
 
         ///<summary>Get current network instance</summary>
         ///<returns>Returns StellarSdk.Network instance</returns>
         public Stellar.Network Network
         {
-            get { return _network; }
+            get { return InnerNetwork; }
         }
 
         ///<summary>Get StellarSdk.Server instance</summary>
         ///<returns>Returns StellarSdk.Server instance</returns>
         public Stellar.Server HorizonClient {
             get {
-                if (_horizonClient != null) return _horizonClient;
+                if (InnerHorizonClient != null) return InnerHorizonClient;
 
-                _horizonClient =
+                InnerHorizonClient =
                     Stellar.Network.Current != null && 
                     Stellar.Network.IsPublicNetwork(Stellar.Network.Current)
                         ? new Stellar.Server(Urls["PUBLIC"])
                         : new Stellar.Server(Urls["TESTNET"]);
 
-                return _horizonClient;
+                return InnerHorizonClient;
             }
         }
 

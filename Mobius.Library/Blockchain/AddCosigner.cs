@@ -20,7 +20,7 @@ namespace Mobius.Library.Blockchain
         {
             Stellar.Server client = new Client().HorizonClient;
             Stellar.Account account =  new Stellar.Account(keypair, null); // null sequnece number for now
-            Stellar.Transaction tx = _tx(account, cosignerKeypair, weight);
+            Stellar.Transaction tx = this.Tx(account, cosignerKeypair, weight);
 
             tx.Sign(account.KeyPair);
 
@@ -32,7 +32,7 @@ namespace Mobius.Library.Blockchain
         ///<param name="cosignerKeypair">Cosigner keypair</param>
         ///<param name="weight">Cosigner weight</param>
         ///<returns>Returns new Stellar Transaction.</returns>
-        private Stellar.Transaction _tx(
+        private Stellar.Transaction Tx(
             Stellar.Account account, 
             Stellar.xdr.SignerKey cosignerKeypair, 
             int weight

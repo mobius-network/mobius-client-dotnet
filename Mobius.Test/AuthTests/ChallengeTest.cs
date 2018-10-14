@@ -7,13 +7,13 @@ namespace Mobius.Test.AuthTests
 {
     public class ChallengeFixture
     {
-        public Stellar.KeyPair keypair = Stellar.KeyPair.Random();
-        public Stellar.Transaction tx { get; private set; }
+        public Stellar.KeyPair Keypair = Stellar.KeyPair.Random();
+        public Stellar.Transaction Tx { get; private set; }
 
         public ChallengeFixture()
         {
             Stellar.Network.UseTestNetwork();
-            tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(keypair.SeedBytes));
+            Tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(Keypair.SeedBytes));
         }
     }
     
@@ -28,7 +28,7 @@ namespace Mobius.Test.AuthTests
         [Fact]
         public void SignsChallengeCorrectlyByDeveloper()
         {
-            Assert.True(new Library.Utils.Keypair().verify(_fixture.tx, _fixture.keypair));
+            Assert.True(new Library.Utils.Keypair().Verify(_fixture.Tx, _fixture.Keypair));
         }
 
         [Fact]
@@ -36,13 +36,13 @@ namespace Mobius.Test.AuthTests
         {
             Stellar.MemoText memo = Stellar.Memo.Text("Mobius authentication");
             
-            Assert.Equal(memo, _fixture.tx.Memo);
+            Assert.Equal(memo, _fixture.Tx.Memo);
         }
 
         [Fact]
         public void ContainsTimeBounds()
         {
-            Assert.NotNull(_fixture.tx.TimeBounds);
+            Assert.NotNull(_fixture.Tx.TimeBounds);
         }
 
         [Fact]
@@ -50,21 +50,21 @@ namespace Mobius.Test.AuthTests
         {
             long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-            Assert.Equal(_fixture.tx.TimeBounds.MinTime.ToString(), timeNow.ToString());
+            Assert.Equal(_fixture.Tx.TimeBounds.MinTime.ToString(), timeNow.ToString());
         }
 
         [Fact]
         public void ContainsCorrectMaximumTimeBounds()
         {
-            long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds() + Library.Client.challengeExpiresIn;
+            long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds() + Library.Client.ChallengeExpiresIn;
 
-            Assert.Equal(_fixture.tx.TimeBounds.MaxTime.ToString(), timeNow.ToString());
+            Assert.Equal(_fixture.Tx.TimeBounds.MaxTime.ToString(), timeNow.ToString());
         }
 
         [Fact]
         public void ContainsCorrectCustomTimeBounds()
         {
-            Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(_fixture.keypair.SeedBytes, 100));
+            Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(_fixture.Keypair.SeedBytes, 100));
             long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds() + 100;
 
             Assert.Equal(tx.TimeBounds.MaxTime.ToString(), timeNow.ToString());

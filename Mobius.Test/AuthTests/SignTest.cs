@@ -7,8 +7,8 @@ namespace Mobius.Test.AuthTests
 {
     public class SignFixture
     {
-        public Stellar.KeyPair userKeypair = Stellar.KeyPair.Random();
-        public Stellar.KeyPair devKeypair = Stellar.KeyPair.Random();
+        public Stellar.KeyPair UserKeypair = Stellar.KeyPair.Random();
+        public Stellar.KeyPair DevKeypair = Stellar.KeyPair.Random();
 
         public SignFixture()
         {
@@ -28,15 +28,15 @@ namespace Mobius.Test.AuthTests
         [Fact]
         public void SignsChallengeCorrectlyByUser()
         {
-            Stellar.Transaction tx = _generateSignedChallenge(_fixture.userKeypair, _fixture.devKeypair);
+            Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
 
-            Assert.True(new Library.Utils.Keypair().verify(tx, _fixture.userKeypair));
+            Assert.True(new Library.Utils.Keypair().Verify(tx, _fixture.UserKeypair));
         }
 
-        private Stellar.Transaction _generateSignedChallenge(Stellar.KeyPair userKeypair, Stellar.KeyPair devKeypair)
+        private Stellar.Transaction GenerateSignedChallenge(Stellar.KeyPair UserKeypair, Stellar.KeyPair DevKeypair)
         {
-            string challengeXdr = new Library.Auth.Challenge().Call(devKeypair.SeedBytes);
-            string signedXdr = new Library.Auth.Sign().Call(userKeypair.SeedBytes, challengeXdr, devKeypair.PublicKey);
+            string challengeXdr = new Library.Auth.Challenge().Call(DevKeypair.SeedBytes);
+            string signedXdr = new Library.Auth.Sign().Call(UserKeypair.SeedBytes, challengeXdr, DevKeypair.PublicKey);
 
             return Stellar.Transaction.FromEnvelopeXdr(signedXdr);
         }

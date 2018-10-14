@@ -14,10 +14,10 @@ namespace Mobius.Library.Auth
         public string Call(byte[] userSecret, string xdr, byte[] address)
         {
             Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(xdr);
-            Stellar.KeyPair keypair = this._keypair(userSecret);
-            Stellar.KeyPair developerKeypair = this._developerKeypair(address);
+            Stellar.KeyPair keypair = this.Keypair(userSecret);
+            Stellar.KeyPair developerKeypair = this.DeveloperKeypair(address);
 
-            this._validate(developerKeypair, tx);
+            this.Validate(developerKeypair, tx);
 
             tx.Sign(keypair);
 
@@ -27,14 +27,14 @@ namespace Mobius.Library.Auth
         ///<summary>Private: returns keypair from secret seed</summary>
         ///<param name="userSecret">Private seed</param>
         ///<returns>Returns keypair from given secret seed</returns>
-        private Stellar.KeyPair _keypair(byte[] userSecret) {
+        private Stellar.KeyPair Keypair(byte[] userSecret) {
             return Stellar.KeyPair.FromSecretSeed(userSecret);
         }
 
         ///<summary>Private: returns keypair from public key</summary>
         ///<param name="address">Developers public key</param>
         ///<returns>Returns keypair from given users public key</returns>
-        private Stellar.KeyPair _developerKeypair(byte[] address) {
+        private Stellar.KeyPair DeveloperKeypair(byte[] address) {
             return Stellar.KeyPair.FromPublicKey(address);
         }
 
@@ -42,8 +42,8 @@ namespace Mobius.Library.Auth
         ///<param name="keypair">keypair object for given developer public key</param>
         ///<param name="tx">Transaction to verify</param>
         ///<returns>Returns true is transaction is valid, throws error otherwise</returns>
-        private Boolean _validate(Stellar.KeyPair keypair, Stellar.Transaction tx) {
-            Boolean isValid = new Utils.Keypair().verify(tx, keypair);
+        private Boolean Validate(Stellar.KeyPair keypair, Stellar.Transaction tx) {
+            Boolean isValid = new Utils.Keypair().Verify(tx, keypair);
 
             if (!isValid) {
                 throw new Exception("Wrong challenge transaction signature");

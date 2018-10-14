@@ -7,8 +7,8 @@ namespace Mobius.Test.AuthTests
 {
     public class TokenFixture
     {
-        public Stellar.KeyPair userKeypair = Stellar.KeyPair.Random();
-        public Stellar.KeyPair devKeypair = Stellar.KeyPair.Random();
+        public Stellar.KeyPair UserKeypair = Stellar.KeyPair.Random();
+        public Stellar.KeyPair DevKeypair = Stellar.KeyPair.Random();
         public TokenFixture()
         {
             Stellar.Network.UseTestNetwork();
@@ -26,36 +26,36 @@ namespace Mobius.Test.AuthTests
         [Fact]
         public void CurrentTimeIsWithinTimeBounds()
         {
-            Stellar.Transaction tx = _generateSignedChallenge(_fixture.userKeypair, _fixture.devKeypair);
-            Library.Auth.Token token = new Library.Auth.Token(_fixture.devKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.userKeypair.PublicKey);
+            Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
+            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.PublicKey);
 
-            Assert.True(token.validate());
+            Assert.True(token.Validate());
         }
 
         [Fact]
         public void ThrowsErrorIfCurrentTimeIsOutsideTimeBounds()
         {
-            Stellar.Transaction tx = _generateSignedChallenge(_fixture.userKeypair, _fixture.devKeypair);
-            Library.Auth.Token token = new Library.Auth.Token(_fixture.devKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.userKeypair.PublicKey);
+            Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
+            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.PublicKey);
 
             System.Threading.Thread.Sleep(11000);
 
-            Assert.ThrowsAny<Exception>(() => token.validate());
+            Assert.ThrowsAny<Exception>(() => token.Validate());
         }
 
         [Fact]
         public void ReturnsTransactionHash()
         {
-            Stellar.Transaction tx = _generateSignedChallenge(_fixture.userKeypair, _fixture.devKeypair);
-            Library.Auth.Token token = new Library.Auth.Token(_fixture.devKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.userKeypair.PublicKey);
+            Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
+            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.PublicKey);
 
-            Assert.NotNull(token.hash());
+            Assert.NotNull(token.Hash());
         }
 
-        private Stellar.Transaction _generateSignedChallenge(Stellar.KeyPair userKeypair, Stellar.KeyPair devKeypair)
+        private Stellar.Transaction GenerateSignedChallenge(Stellar.KeyPair UserKeypair, Stellar.KeyPair DevKeypair)
         {
-            string challengeXdr = new Library.Auth.Challenge().Call(devKeypair.SeedBytes);
-            string signedXdr = new Library.Auth.Sign().Call(userKeypair.SeedBytes, challengeXdr, devKeypair.PublicKey);
+            string challengeXdr = new Library.Auth.Challenge().Call(DevKeypair.SeedBytes);
+            string signedXdr = new Library.Auth.Sign().Call(UserKeypair.SeedBytes, challengeXdr, DevKeypair.PublicKey);
 
             return Stellar.Transaction.FromEnvelopeXdr(signedXdr);
         }
