@@ -13,7 +13,7 @@ namespace Mobius.Test.AuthTests
         public ChallengeFixture()
         {
             Stellar.Network.UseTestNetwork();
-            Tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(Keypair.SeedBytes));
+            Tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(Keypair.SecretSeed));
         }
     }
     
@@ -64,7 +64,7 @@ namespace Mobius.Test.AuthTests
         [Fact]
         public void ContainsCorrectCustomTimeBounds()
         {
-            Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(_fixture.Keypair.SeedBytes, 100));
+            Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(new Library.Auth.Challenge().Call(_fixture.Keypair.SecretSeed, 100));
             long timeNow = DateTimeOffset.Now.ToUnixTimeSeconds() + 100;
 
             Assert.Equal(tx.TimeBounds.MaxTime.ToString(), timeNow.ToString());

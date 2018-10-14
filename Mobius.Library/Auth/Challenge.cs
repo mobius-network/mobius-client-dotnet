@@ -9,7 +9,7 @@ namespace Mobius.Library.Auth
         ///<param name="developerSecret">Developers secret seed</param>
         ///<param name="expireIn">Session expiration time in seconds from now. Default is Client.ChallengeExpiresIn.</param>
         ///<returns>Returns base64-encoded transaction envelope</returns>
-        public string Call(byte[] developerSecret, int expireIn = 0) {
+        public string Call(string developerSecret, int expireIn = 0) {
             if (expireIn == 0) expireIn = Client.ChallengeExpiresIn;
 
             Stellar.KeyPair keypair = this.Keypair(developerSecret);
@@ -33,7 +33,7 @@ namespace Mobius.Library.Auth
 
         ///<param name="developerSecret">Developers secret seed</param>
         ///<returns>Returns developer keypair</returns>
-        private Stellar.KeyPair Keypair(byte[] developerSecret) {
+        private Stellar.KeyPair Keypair(string developerSecret) {
             return Stellar.KeyPair.FromSecretSeed(developerSecret);
         }
 

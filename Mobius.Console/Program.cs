@@ -20,9 +20,9 @@ namespace Mobius.Console
             _userKeypair = RandomKeypair();
             _devKeypair = RandomKeypair();
 
-            string xdr = GetChallenge(_devKeypair.SeedBytes);
+            string xdr = GetChallenge(_devKeypair.SecretSeed);
             string signedXdr = SignChallenge(xdr);
-            string tokenHash = GenerateAuthToken(_devKeypair.SeedBytes, signedXdr, _userKeypair.PublicKey);
+            string tokenHash = GenerateAuthToken(_devKeypair.SecretSeed, signedXdr, _userKeypair.AccountId);
         }
 
         static KeyPair RandomKeypair()
@@ -30,7 +30,7 @@ namespace Mobius.Console
             return KeyPair.Random();
         }
 
-        static string GetChallenge(byte[] devSecret)
+        static string GetChallenge(string devSecret)
         {
             System.Console.WriteLine("---------------------------------");
             System.Console.WriteLine("Generating challenge...");
@@ -56,7 +56,7 @@ namespace Mobius.Console
             return signedXdr;
         }
 
-        static string GenerateAuthToken(byte[] devSecret, string signedXdr, byte[] userPublic)
+        static string GenerateAuthToken(string devSecret, string signedXdr, string userPublic)
         {
             System.Console.WriteLine("---------------------------------");
             System.Console.WriteLine("Generating Auth Token...");

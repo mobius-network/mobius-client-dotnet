@@ -9,9 +9,9 @@ namespace Mobius.Library.Auth
 {
     public class Token
     {
-        private byte[] DeveloperSecret;
+        private string DeveloperSecret;
         private Stellar.Transaction Tx;
-        private byte[] InnerAddress;
+        private string InnerAddress;
         private Stellar.KeyPair Keypair;
         private Stellar.KeyPair TheirKeypair;
         
@@ -19,7 +19,7 @@ namespace Mobius.Library.Auth
         ///<param name="developerSecret">Developer secret seed</param>
         ///<param name="xdr">Challenge transaction xdr</param>
         ///<param name="address">User public key</param>
-        public Token(byte[] developerSecret, string xdr, byte[] address)
+        public Token(string developerSecret, string xdr, string address)
         {
             this.DeveloperSecret = developerSecret;
             this.Tx = Stellar.Transaction.FromEnvelopeXdr(xdr);
@@ -87,7 +87,7 @@ namespace Mobius.Library.Auth
         ///<returns>keypair object of user being authorized</returns>
         private Stellar.KeyPair GetTheirKeypair() {
             this.TheirKeypair =
-            this.TheirKeypair != null ? this.TheirKeypair : Stellar.KeyPair.FromPublicKey(this.InnerAddress);
+            this.TheirKeypair != null ? this.TheirKeypair : Stellar.KeyPair.FromAccountId(this.InnerAddress);
 
             return this.TheirKeypair;
         }

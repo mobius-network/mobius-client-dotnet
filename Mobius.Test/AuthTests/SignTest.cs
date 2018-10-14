@@ -35,7 +35,7 @@ namespace Mobius.Test.AuthTests
 
         private Stellar.Transaction GenerateSignedChallenge(Stellar.KeyPair UserKeypair, Stellar.KeyPair DevKeypair)
         {
-            string challengeXdr = new Library.Auth.Challenge().Call(DevKeypair.SeedBytes);
+            string challengeXdr = new Library.Auth.Challenge().Call(DevKeypair.SecretSeed);
             string signedXdr = new Library.Auth.Sign().Call(UserKeypair.SeedBytes, challengeXdr, DevKeypair.PublicKey);
 
             return Stellar.Transaction.FromEnvelopeXdr(signedXdr);

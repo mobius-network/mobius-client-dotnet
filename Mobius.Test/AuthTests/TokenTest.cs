@@ -27,7 +27,7 @@ namespace Mobius.Test.AuthTests
         public void CurrentTimeIsWithinTimeBounds()
         {
             Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
-            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.PublicKey);
+            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SecretSeed, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.AccountId);
 
             Assert.True(token.Validate());
         }
@@ -36,7 +36,7 @@ namespace Mobius.Test.AuthTests
         public void ThrowsErrorIfCurrentTimeIsOutsideTimeBounds()
         {
             Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
-            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.PublicKey);
+            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SecretSeed, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.AccountId);
 
             System.Threading.Thread.Sleep(11000);
 
@@ -47,14 +47,14 @@ namespace Mobius.Test.AuthTests
         public void ReturnsTransactionHash()
         {
             Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
-            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SeedBytes, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.PublicKey);
+            Library.Auth.Token token = new Library.Auth.Token(_fixture.DevKeypair.SecretSeed, tx.ToEnvelopeXdrBase64(), _fixture.UserKeypair.AccountId);
 
             Assert.NotNull(token.Hash());
         }
 
         private Stellar.Transaction GenerateSignedChallenge(Stellar.KeyPair UserKeypair, Stellar.KeyPair DevKeypair)
         {
-            string challengeXdr = new Library.Auth.Challenge().Call(DevKeypair.SeedBytes);
+            string challengeXdr = new Library.Auth.Challenge().Call(DevKeypair.SecretSeed);
             string signedXdr = new Library.Auth.Sign().Call(UserKeypair.SeedBytes, challengeXdr, DevKeypair.PublicKey);
 
             return Stellar.Transaction.FromEnvelopeXdr(signedXdr);
