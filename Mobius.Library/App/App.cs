@@ -38,8 +38,8 @@ namespace Mobius.Library.App
 
         ///<summary>Get the balance of the app (developers account)</summary>
         ///<returns>Returns Promise - app balance</returns>
-        async public Task<decimal> AppBalance() {
-            return await this.InnerAppAccount.Balance();
+        public decimal AppBalance() {
+            return this.InnerAppAccount.Balance().Result;
         }
 
         ///<summary>Get the developer app keypair.</summary>
@@ -54,10 +54,10 @@ namespace Mobius.Library.App
         }
 
         ///<returns>Promise returns the users balance</returns>
-        async public Task<decimal> UserBalance() {
-            await this.ValidateUserBalance();
+        public decimal UserBalance() {
+            this.ValidateUserBalance();
 
-            return await this.InnerUserAccount.Balance();
+            return this.InnerUserAccount.Balance().Result;
         }
 
         ///<returns>Returns keypair object for user</returns>
@@ -70,16 +70,19 @@ namespace Mobius.Library.App
         ///<param name="amount">Payment amount</param>
         ///<param name="destination">(optional) Third party receiver address</param>
         ///<returns>Promise returns response object of transaction</returns>
-        async public Task<StellarResponses.SubmitTransactionResponse> Charge(decimal amount, Stellar.KeyPair destination = null) {
-            if (await UserBalance() < amount) {
+        async public Task<StellarResponses.SubmitTransactionResponse> Charge(decimal amount, string destination = null) {
+            if (UserBalance() < amount) {
                 throw new Exception("Insufficient Funds");
             }
+
 
             return await SubmitTx(tx => {
                 tx.AddOperation(this.UserPaymentOp(amount, AppKeypair()).Result);
 
                 if (destination != null) {
-                    tx.AddOperation(this.AppPaymentOp(amount, destination).Result);
+                    Stellar.KeyPair target = Stellar.KeyPair.FromAccountId(destination);
+
+                    tx.AddOperation(this.AppPaymentOp(amount, target).Result);
                 }
             });
         }
@@ -91,7 +94,7 @@ namespace Mobius.Library.App
         async public Task<StellarResponses.SubmitTransactionResponse> Payout(decimal amount, Stellar.KeyPair destination = null) {
             if (destination == null) destination = UserKeypair();
 
-            if (await AppBalance() < amount) {
+            if (AppBalance() < amount) {
                 throw new Exception("Insufficient Funds");
             }
 
@@ -105,7 +108,7 @@ namespace Mobius.Library.App
         ///<param name="destination">Third party receiver address</param>
         ///<returns>Promise returns response object of transaction</returns>
         async public Task<StellarResponses.SubmitTransactionResponse> Transfer(decimal amount, Stellar.KeyPair destination) {
-            if (await UserBalance() < amount) {
+            if (UserBalance() < amount) {
                 throw new Exception("Insufficient Funds");
             }
 
@@ -174,12 +177,12 @@ namespace Mobius.Library.App
 
         ///<summary>Private: Check developer authorization and trustline.</summary>
         ///<returns>Promise returns true if developer is authorized to use an application and trustline exists</returns>
-        async private Task<Boolean> ValidateUserBalance() {
+        private Boolean ValidateUserBalance() {
             if (!Authorized()) {
                 throw new Exception("Authorisation missing");
             }
 
-            if (await UserAccount().TrustlineExists() != true) {
+            if (UserAccount().TrustlineExists().Result != true) {
                 throw new Exception("Trustline not found");
             }
 

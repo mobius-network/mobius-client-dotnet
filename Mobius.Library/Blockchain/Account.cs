@@ -43,7 +43,7 @@ namespace Mobius.Library.Blockchain
         ///<returns>Returns true if given keypair is added as cosigner to current account.</returns>
         public Boolean Authorized(Stellar.KeyPair toKeypair) 
         {
-            StellarResponses.Signer signer = this.FindSigner(toKeypair.PublicKey.ToString());
+            StellarResponses.Signer signer = this.FindSigner(toKeypair.AccountId);
 
             return signer != null ? true : false;
         }
