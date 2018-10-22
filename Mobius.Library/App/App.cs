@@ -71,10 +71,7 @@ namespace Mobius.Library.App
         ///<param name="destination">(optional) Third party receiver address</param>
         ///<returns>Promise returns response object of transaction</returns>
         async public Task<StellarResponses.SubmitTransactionResponse> Charge(decimal amount, string destination = null) {
-            if (UserBalance() < amount) {
-                throw new Exception("Insufficient Funds");
-            }
-
+            if (UserBalance() < amount) throw new Exception("Insufficient Funds");
 
             return await SubmitTx(tx => {
                 tx.AddOperation(this.UserPaymentOp(amount, AppKeypair()).Result);
@@ -91,15 +88,15 @@ namespace Mobius.Library.App
         ///<param name="amount">Payment amount</param>
         ///<param name="destination">Third party receiver address - default, user address</param>
         ///<returns>Promise returns response object of transaction</returns>
-        async public Task<StellarResponses.SubmitTransactionResponse> Payout(decimal amount, Stellar.KeyPair destination = null) {
-            if (destination == null) destination = UserKeypair();
+        async public Task<StellarResponses.SubmitTransactionResponse> Payout(decimal amount, string destination = null) {
+            if (destination == null) destination = UserKeypair().AccountId;
 
-            if (AppBalance() < amount) {
-                throw new Exception("Insufficient Funds");
-            }
+            if (AppBalance() < amount) throw new Exception("Insufficient Funds");
 
             return await this.SubmitTx(tx => {
-                tx.AddOperation(this.AppPaymentOp(amount, destination).Result);
+                Stellar.KeyPair destinationKeypair = Stellar.KeyPair.FromAccountId(destination);
+
+                tx.AddOperation(this.AppPaymentOp(amount, destinationKeypair).Result);
             });
         }
 
@@ -107,13 +104,13 @@ namespace Mobius.Library.App
         ///<param name="amount">Payment amount</param>
         ///<param name="destination">Third party receiver address</param>
         ///<returns>Promise returns response object of transaction</returns>
-        async public Task<StellarResponses.SubmitTransactionResponse> Transfer(decimal amount, Stellar.KeyPair destination) {
-            if (UserBalance() < amount) {
-                throw new Exception("Insufficient Funds");
-            }
+        async public Task<StellarResponses.SubmitTransactionResponse> Transfer(decimal amount, string destination) {
+            if (UserBalance() < amount) throw new Exception("Insufficient Funds");
 
             return await this.SubmitTx(tx => {
-                tx.AddOperation(this.UserPaymentOp(amount, destination).Result);
+                Stellar.KeyPair destinationKeypair = Stellar.KeyPair.FromAccountId(destination);
+                
+                tx.AddOperation(this.UserPaymentOp(amount, destinationKeypair).Result);
             });
         }
 
@@ -121,7 +118,9 @@ namespace Mobius.Library.App
         ///<param name="buildFn">Callback to build the transaction</param>
         ///<returns>Promise that resolves or rejects with response of horizon</returns>
         async public Task<StellarResponses.SubmitTransactionResponse> SubmitTx(Action<Stellar.Transaction.Builder> buildFn) {
-            Stellar.Transaction.Builder builder = new Stellar.Transaction.Builder(new Stellar.Account(UserAccount().KeyPair(), null));
+            Stellar.Account account = new Stellar.Account(UserAccount().KeyPair(), UserAccount().Info().SequenceNumber);
+            
+            Stellar.Transaction.Builder builder = new Stellar.Transaction.Builder(account);
 
             buildFn(builder);
             
@@ -156,10 +155,12 @@ namespace Mobius.Library.App
         async private Task<Stellar.Operation> UserPaymentOp(decimal amount, Stellar.KeyPair destination) {
             StellarResponses.AssetResponse asset = await new Client().StellarAsset();
 
-            return new Stellar.PaymentOperation
+            Stellar.PaymentOperation payment = new Stellar.PaymentOperation
                 .Builder(destination, asset.Asset, amount.ToString())
                 .SetSourceAccount(UserKeypair())
                 .Build();
+            
+            return payment;
         }
 
         ///<summary>Private: App payment operation</summary>

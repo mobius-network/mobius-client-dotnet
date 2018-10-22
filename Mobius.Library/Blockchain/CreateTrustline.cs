@@ -16,7 +16,7 @@ namespace Mobius.Library.Blockchain
 
             if (asset == null) asset = await client.StellarAsset();
 
-            Blockchain.Account account = await new AccountBuilder().Build(keypair);
+            Blockchain.Account account = await AccountBuilder.Build(keypair);
 
             Stellar.Account _account = client.GetStellarAccount(account);
 
