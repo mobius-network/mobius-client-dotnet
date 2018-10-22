@@ -14,10 +14,10 @@ namespace Mobius.Library.App
         async public Task<App> Build(string developerSecret, string address)
         {
             Stellar.KeyPair developerKeypair = Stellar.KeyPair.FromSecretSeed(developerSecret);
-            Blockchain.Account developerAccount = await new AccountBuilder().Build(developerKeypair);
+            Blockchain.Account developerAccount = await AccountBuilder.Build(developerKeypair);
 
             Stellar.KeyPair userKeypair = Stellar.KeyPair.FromAccountId(address);
-            Blockchain.Account userAccount = await new AccountBuilder().Build(userKeypair);
+            Blockchain.Account userAccount = await AccountBuilder.Build(userKeypair);
 
             return new App(developerAccount, userAccount);
         }

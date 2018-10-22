@@ -78,11 +78,7 @@ namespace Mobius.Library.Blockchain
         {
             this.InnerAccount = null;
 
-            byte[] accountId = this.InnerKeyPair.PublicKey;
-
-            Uri uri = new Uri($"/accounts/{accountId}");
-
-            this.InnerAccount = await this.ClientInstance.Accounts.Account(uri);
+            this.InnerAccount = await this.ClientInstance.Accounts.Account(this.InnerKeyPair);
 
             return this.InnerAccount;
         }
