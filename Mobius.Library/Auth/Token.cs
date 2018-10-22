@@ -94,8 +94,8 @@ namespace Mobius.Library.Auth
 
         ///<returns>Returns true if transaction is correctly signed by user and developer</returns>
         private Boolean SignedCorrectly() {
-            bool isSignedByDeveloper = new Keypair().Verify(this.Tx, this.GetKeypair());
-            bool isSignedByUser = new Keypair().Verify(this.Tx, this.GetTheirKeypair());
+            bool isSignedByDeveloper = Utils.Keypair.Verify(this.Tx, this.GetKeypair());
+            bool isSignedByUser = Utils.Keypair.Verify(this.Tx, this.GetTheirKeypair());
 
             return isSignedByDeveloper && isSignedByUser;
         }

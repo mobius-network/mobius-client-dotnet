@@ -10,7 +10,7 @@ namespace Mobius.Library.Utils
         ///<param name="tx">Transaction to verify</param>
         ///<param name="keypair">Keypair object</param>
         ///<returns>Returns true if given transaction is signed using specified keypair</returns>
-        public Boolean Verify(Stellar.Transaction tx, Stellar.KeyPair keypair) {
+        public static Boolean Verify(Stellar.Transaction tx, Stellar.KeyPair keypair) {
             var signatures = tx.Signatures;
             var hash = tx.Hash();
 

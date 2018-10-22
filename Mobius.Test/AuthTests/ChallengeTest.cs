@@ -28,7 +28,7 @@ namespace Mobius.Test.AuthTests
         [Fact]
         public void SignsChallengeCorrectlyByDeveloper()
         {
-            Assert.True(new Library.Utils.Keypair().Verify(_fixture.Tx, _fixture.Keypair));
+            Assert.True(Library.Utils.Keypair.Verify(_fixture.Tx, _fixture.Keypair));
         }
 
         [Fact]

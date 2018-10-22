@@ -23,7 +23,7 @@ namespace Mobius.Test.UtilsTests
             Stellar.KeyPair keypair = Stellar.KeyPair.Random();
             Stellar.Transaction tx = this.GenerateSignedTransaction(keypair).Result;
 
-            Assert.True(new Library.Utils.Keypair().Verify(tx, keypair));
+            Assert.True(Library.Utils.Keypair.Verify(tx, keypair));
         }
         
         [Fact]
@@ -33,7 +33,7 @@ namespace Mobius.Test.UtilsTests
             Stellar.KeyPair anotherKeypair = Stellar.KeyPair.Random();
             Stellar.Transaction tx = this.GenerateSignedTransaction(keypair).Result;
 
-            Assert.False(new Library.Utils.Keypair().Verify(tx, anotherKeypair));
+            Assert.False(Library.Utils.Keypair.Verify(tx, anotherKeypair));
         }
 
         async private Task<Stellar.Transaction> GenerateSignedTransaction(Stellar.KeyPair keypair)

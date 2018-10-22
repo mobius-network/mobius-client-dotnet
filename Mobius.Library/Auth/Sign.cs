@@ -43,7 +43,7 @@ namespace Mobius.Library.Auth
         ///<param name="tx">Transaction to verify</param>
         ///<returns>Returns true is transaction is valid, throws error otherwise</returns>
         private Boolean Validate(Stellar.KeyPair keypair, Stellar.Transaction tx) {
-            Boolean isValid = new Utils.Keypair().Verify(tx, keypair);
+            Boolean isValid = Utils.Keypair.Verify(tx, keypair);
 
             if (!isValid) {
                 throw new Exception("Wrong challenge transaction signature");

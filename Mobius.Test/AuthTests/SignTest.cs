@@ -30,7 +30,7 @@ namespace Mobius.Test.AuthTests
         {
             Stellar.Transaction tx = this.GenerateSignedChallenge(_fixture.UserKeypair, _fixture.DevKeypair);
 
-            Assert.True(new Library.Utils.Keypair().Verify(tx, _fixture.UserKeypair));
+            Assert.True(Library.Utils.Keypair.Verify(tx, _fixture.UserKeypair));
         }
 
         private Stellar.Transaction GenerateSignedChallenge(Stellar.KeyPair UserKeypair, Stellar.KeyPair DevKeypair)
