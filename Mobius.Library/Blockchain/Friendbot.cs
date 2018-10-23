@@ -9,7 +9,7 @@ namespace Mobius.Library.Blockchain
         ///<summary>Fund keypair and get response</summary>
         ///<param name="keypair">Keypair of account to fund</param>
         ///<returns>Promise returns response of funded account</returns>
-        public StellarRequests.FriendBotRequestBuilder Call(Stellar.KeyPair keypair) {
+        public static StellarRequests.FriendBotRequestBuilder Call(Stellar.KeyPair keypair) {
             return new Client().HorizonClient.TestNetFriendBot.FundAccount(keypair);
         }
     }
