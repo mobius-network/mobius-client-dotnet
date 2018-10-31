@@ -16,11 +16,11 @@ namespace Mobius.Library.Blockchain
 
             if (asset == null) asset = await client.StellarAsset();
 
-            Blockchain.Account account = await AccountBuilder.Build(keypair);
+            var account = await AccountBuilder.Build(keypair);
 
-            Stellar.Account _account = client.GetStellarAccount(account);
+            var _account = client.GetStellarAccount(account);
 
-            Stellar.Transaction tx = this.Tx(_account, asset.Asset);
+            var tx = this.Tx(_account, asset.Asset);
 
             tx.Sign(account.KeyPair().PrivateKey);
 
@@ -35,7 +35,7 @@ namespace Mobius.Library.Blockchain
             string assetXdr = asset.ToXdr().ToString();
             string opXdrAmount = Stellar.Operation.ToXdrAmount(assetXdr).ToString();
 
-            Stellar.ChangeTrustOperation operation = new Stellar.ChangeTrustOperation.Builder(asset, opXdrAmount).Build();
+            var operation = new Stellar.ChangeTrustOperation.Builder(asset, opXdrAmount).Build();
 
             return new Stellar.Transaction.Builder(account).AddOperation(operation).Build();
         }

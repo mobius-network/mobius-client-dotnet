@@ -29,7 +29,7 @@ namespace Mobius.Library.Auth
         ///<summary>Verify and return timebounds for the given transaction</summary>
         ///<returns>Returns timebounds for given transaction (`minTime` and `maxTime`)</returns>
         public Stellar.TimeBounds TimeBounds() {
-            Stellar.TimeBounds timebounds = this.Tx.TimeBounds;
+            var timebounds = this.Tx.TimeBounds;
 
             if (timebounds == null) {
                 throw new Exception("Wrong challenge transaction structure");
@@ -52,7 +52,7 @@ namespace Mobius.Library.Auth
                 throw new Exception("Wrong challenge transaction signature");
             }
 
-            Stellar.TimeBounds bounds = TimeBounds();
+            var bounds = TimeBounds();
 
             if (!this.TimeNowCovers(bounds)) {
                 throw new Exception("Challenge transaction expired");

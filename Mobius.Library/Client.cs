@@ -55,8 +55,7 @@ namespace Mobius.Library {
 
             if (assetIssuer == null) assetIssuer = GetAssetIssuer();
 
-            StellarRequests.Page<StellarResponses.AssetResponse> responses = 
-                await HorizonClient.Assets.AssetIssuer(assetIssuer).AssetCode(assetCode).Execute();
+            var responses = await HorizonClient.Assets.AssetIssuer(assetIssuer).AssetCode(assetCode).Execute();
 
             InnerStellarAsset = responses.Records.FirstOrDefault();
 

@@ -14,7 +14,7 @@ namespace Mobius.Library.Blockchain
         {
             Client client = new Client();
 
-            StellarResponses.AccountResponse account = await client.HorizonClient.Accounts.Account(keypair);
+            var account = await client.HorizonClient.Accounts.Account(keypair);
 
             return new Account(account, keypair);
         }   

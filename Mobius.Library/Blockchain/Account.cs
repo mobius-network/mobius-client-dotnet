@@ -43,7 +43,7 @@ namespace Mobius.Library.Blockchain
         ///<returns>Returns true if given keypair is added as cosigner to current account.</returns>
         public Boolean Authorized(Stellar.KeyPair toKeypair) 
         {
-            StellarResponses.Signer signer = this.FindSigner(toKeypair.AccountId);
+            var signer = this.FindSigner(toKeypair.AccountId);
 
             return signer != null ? true : false;
         }
@@ -54,7 +54,7 @@ namespace Mobius.Library.Blockchain
         {
             if (asset == null) asset = await new Client().StellarAsset();
 
-            StellarResponses.Balance balance = this.FindBalance(asset);
+            var balance = this.FindBalance(asset);
 
             return decimal.Parse(balance.BalanceString);
         }
@@ -65,7 +65,7 @@ namespace Mobius.Library.Blockchain
         {
             if (asset == null) asset = await new Client().StellarAsset();
 
-            StellarResponses.Balance balance = this.FindBalance(asset);
+            var balance = this.FindBalance(asset);
 
             decimal limit = decimal.Parse(balance.Limit);
 

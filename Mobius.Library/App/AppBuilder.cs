@@ -13,11 +13,11 @@ namespace Mobius.Library.App
         ///<returns>Promise returns new app instance</returns>
         async public Task<App> Build(string developerSecret, string address)
         {
-            Stellar.KeyPair developerKeypair = Stellar.KeyPair.FromSecretSeed(developerSecret);
-            Blockchain.Account developerAccount = await AccountBuilder.Build(developerKeypair);
+            var developerKeypair = Stellar.KeyPair.FromSecretSeed(developerSecret);
+            var developerAccount = await AccountBuilder.Build(developerKeypair);
 
-            Stellar.KeyPair userKeypair = Stellar.KeyPair.FromAccountId(address);
-            Blockchain.Account userAccount = await AccountBuilder.Build(userKeypair);
+            var userKeypair = Stellar.KeyPair.FromAccountId(address);
+            var userAccount = await AccountBuilder.Build(userKeypair);
 
             return new App(developerAccount, userAccount);
         }

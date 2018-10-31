@@ -18,9 +18,9 @@ namespace Mobius.Library.Blockchain
             int weight = 1
         ) 
         {
-            Stellar.Server client = new Client().HorizonClient;
-            Stellar.Account account =  new Stellar.Account(keypair, null); // null sequnece number for now
-            Stellar.Transaction tx = this.Tx(account, cosignerKeypair, weight);
+            var client = new Client().HorizonClient;
+            var account =  new Stellar.Account(keypair, null); // null sequnece number for now
+            var tx = this.Tx(account, cosignerKeypair, weight);
 
             tx.Sign(account.KeyPair);
 
@@ -38,7 +38,7 @@ namespace Mobius.Library.Blockchain
             int weight
         ) 
         {
-            Stellar.SetOptionsOperation operation = 
+            var operation = 
                 new Stellar.SetOptionsOperation.Builder()
                     .SetHighThreshold(10)
                     .SetLowThreshold(1)

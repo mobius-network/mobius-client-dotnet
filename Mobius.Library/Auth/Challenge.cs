@@ -12,15 +12,14 @@ namespace Mobius.Library.Auth
         public string Call(string developerSecret, int expireIn = 0) {
             if (expireIn == 0) expireIn = Client.ChallengeExpiresIn;
 
-            Stellar.KeyPair keypair = this.Keypair(developerSecret);
-            Stellar.Account account = new Stellar.Account(keypair, this.RandomSequence());
-
-            Stellar.PaymentOperation operation = 
+            var keypair = this.Keypair(developerSecret);
+            var account = new Stellar.Account(keypair, this.RandomSequence());
+            var operation = 
                 new Stellar.PaymentOperation.Builder(keypair, new Stellar.AssetTypeNative(), "0.000001")
                     .SetSourceAccount(Stellar.KeyPair.Random())
                     .Build();
 
-            Stellar.Transaction tx = new Stellar.Transaction.Builder(account)
+            var tx = new Stellar.Transaction.Builder(account)
                 .AddMemo(this.Memo())
                 .AddTimeBounds(this.BuildTimeBounds(expireIn))
                 .AddOperation(operation)

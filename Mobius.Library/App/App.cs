@@ -77,7 +77,7 @@ namespace Mobius.Library.App
                 tx.AddOperation(this.UserPaymentOp(amount, AppKeypair()).Result);
 
                 if (destination != null) {
-                    Stellar.KeyPair target = Stellar.KeyPair.FromAccountId(destination);
+                    var target = Stellar.KeyPair.FromAccountId(destination);
 
                     tx.AddOperation(this.AppPaymentOp(amount, target).Result);
                 }
@@ -94,7 +94,7 @@ namespace Mobius.Library.App
             if (AppBalance() < amount) throw new Exception("Insufficient Funds");
 
             return await this.SubmitTx(tx => {
-                Stellar.KeyPair destinationKeypair = Stellar.KeyPair.FromAccountId(destination);
+                var destinationKeypair = Stellar.KeyPair.FromAccountId(destination);
 
                 tx.AddOperation(this.AppPaymentOp(amount, destinationKeypair).Result);
             });
@@ -108,7 +108,7 @@ namespace Mobius.Library.App
             if (UserBalance() < amount) throw new Exception("Insufficient Funds");
 
             return await this.SubmitTx(tx => {
-                Stellar.KeyPair destinationKeypair = Stellar.KeyPair.FromAccountId(destination);
+                var destinationKeypair = Stellar.KeyPair.FromAccountId(destination);
                 
                 tx.AddOperation(this.UserPaymentOp(amount, destinationKeypair).Result);
             });
@@ -118,16 +118,16 @@ namespace Mobius.Library.App
         ///<param name="buildFn">Callback to build the transaction</param>
         ///<returns>Promise that resolves or rejects with response of horizon</returns>
         async public Task<StellarResponses.SubmitTransactionResponse> SubmitTx(Action<Stellar.Transaction.Builder> buildFn) {
-            Stellar.Account account = new Stellar.Account(UserAccount().KeyPair(), UserAccount().Info().SequenceNumber);
+            var account = new Stellar.Account(UserAccount().KeyPair(), UserAccount().Info().SequenceNumber);
             
-            Stellar.Transaction.Builder builder = new Stellar.Transaction.Builder(account);
+            var builder = new Stellar.Transaction.Builder(account);
 
             buildFn(builder);
             
-            Stellar.Transaction tx = builder.Build();
+            var tx = builder.Build();
             tx.Sign(AppKeypair());
 
-            StellarResponses.SubmitTransactionResponse response = await this.ClientInstance.SubmitTransaction(tx);
+            var response = await this.ClientInstance.SubmitTransaction(tx);
 
             await this.Reload();
 
@@ -137,10 +137,10 @@ namespace Mobius.Library.App
         ///<summary>Private: Reload the user and app accounts</summary>
         ///<returns>Promise, Returns reloaded app and user accounts</returns>
         async private Task<List<StellarResponses.AccountResponse>> Reload() {
-            List<StellarResponses.AccountResponse> accounts = new List<StellarResponses.AccountResponse>();
+            var accounts = new List<StellarResponses.AccountResponse>();
 
-            StellarResponses.AccountResponse appAccount = await this.InnerAppAccount.Reload();
-            StellarResponses.AccountResponse userAccount = await this.InnerUserAccount.Reload();
+            var appAccount = await this.InnerAppAccount.Reload();
+            var userAccount = await this.InnerUserAccount.Reload();
 
             accounts.Add(appAccount);
             accounts.Add(userAccount);
@@ -153,9 +153,9 @@ namespace Mobius.Library.App
         ///<param name="destination">Receiver keypair</param>
         ///<returns>Promise returns payment operation</returns>
         async private Task<Stellar.Operation> UserPaymentOp(decimal amount, Stellar.KeyPair destination) {
-            StellarResponses.AssetResponse asset = await new Client().StellarAsset();
+            var asset = await new Client().StellarAsset();
 
-            Stellar.PaymentOperation payment = new Stellar.PaymentOperation
+            var payment = new Stellar.PaymentOperation
                 .Builder(destination, asset.Asset, amount.ToString())
                 .SetSourceAccount(UserKeypair())
                 .Build();
@@ -168,7 +168,7 @@ namespace Mobius.Library.App
         ///<param name="destination">Receiver keypair</param>
         ///<returns>Promise returns payment operation</returns>
         async private Task<Stellar.Operation> AppPaymentOp(decimal amount, Stellar.KeyPair destination) {
-            StellarResponses.AssetResponse asset = await new Client().StellarAsset();
+            var asset = await new Client().StellarAsset();
 
             return new Stellar.PaymentOperation
                 .Builder(destination, asset.Asset, amount.ToString())

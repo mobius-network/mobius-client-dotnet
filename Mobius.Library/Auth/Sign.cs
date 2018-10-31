@@ -13,9 +13,9 @@ namespace Mobius.Library.Auth
         ///<returns>Returns base64-encoded transaction envelope</returns>
         public string Call(byte[] userSecret, string xdr, byte[] address)
         {
-            Stellar.Transaction tx = Stellar.Transaction.FromEnvelopeXdr(xdr);
-            Stellar.KeyPair keypair = this.Keypair(userSecret);
-            Stellar.KeyPair developerKeypair = this.DeveloperKeypair(address);
+            var tx = Stellar.Transaction.FromEnvelopeXdr(xdr);
+            var keypair = this.Keypair(userSecret);
+            var developerKeypair = this.DeveloperKeypair(address);
 
             this.Validate(developerKeypair, tx);
 
