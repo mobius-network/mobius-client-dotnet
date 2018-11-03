@@ -1,10 +1,39 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Mobius</RootNamespace>
+    <Version>1.0.0</Version>
+    <OutputType>Library</OutputType>
+    <LangVersion>7.3</LangVersion>
+    <Description>A Mobius DApp Store SDK used for accepting cryptocurrency payments in any .NET application.</Description>
+    <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
+    <PackageTags>'.NET Core' 'Mobius Network' 'Stellar' 'Horizon' 'Blockchain' 'Crypto' 'DApp Store' 'Payments'</PackageTags>
+    <Copyright>2018 Mochi, Inc</Copyright>
+    <PackageProjectUrl>https://github.com/mobius-network/mobius-client-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mobius-network/mobius-client-dotnet</RepositoryUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Tyler Pena</Authors>
+    <Product>Mobius .NET SDK</Product>
+    <PackageId>mobius-client-dotnet</PackageId>
+    <Company>Mobius Network</Company>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>..\package\lib\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove=".obj\**\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="stellar-dotnet-sdk" Version="2.1.0" />
   </ItemGroup>
 
