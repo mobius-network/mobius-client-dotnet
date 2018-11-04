@@ -2,7 +2,7 @@
 
 # Mobius DApp Store C# .NET SDK
 
-The Mobius DApp Store .Net SDK makes it easy to integrate Mobius DApp Store MOBI payments into .NET Standard and .NET Core applications.
+The Mobius DApp Store .Net SDK makes it easy to integrate Mobius DApp Store MOBI payments. The Mobius .NET SDK is a library that works with any .NET Standard or .NET Core API or application. This also means that any Unity Project running on version 2018.1 or later can now utilize this SDK for in-app cryptocurrency payments with 0 fees. The SDK has a target framework of netstandard2.0 making it compatible with a wide variety of .NET projects.
 
 ## Installation
 Install the nuget package into an existing .NET project.
