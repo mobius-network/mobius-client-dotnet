@@ -1,11 +1,3 @@
-# Mobius DApp Store .NET SDK
-## mobius-client-dotnet
-
-### TODO's
-* README and Documentation
-* Flappy Dapp Example
-* Nuget Package
-
 # mobius-client-dotnet
 
 # Mobius DApp Store C# .NET SDK
@@ -29,11 +21,12 @@ An overview of the DApp Store architecture is:
   2) Signs a challenge transaction from the app with its secret key to authenticate that this user owns the account. This prevents a different person from pretending they own the account and spending the MOBI (more below under Authentication).
 
 ## Installation
+Install the nuget package into an existing .NET project.
 
 Using Nuget:
 
 ```sh
-$ nuget command
+$ dotnet add package mobius-client-dotnet
 ```
 
 ## Production Server Setup
@@ -60,7 +53,7 @@ This authentication is accomplished through the following process:
 
 Note: the challenge transaction also has time bounds to restrict the time window when it can be used.
 
-See demo at:
+**Basic Authentication Console Demo**
 
 ```bash
 $ git clone https://github.com/mobius-network/mobius-client-dotnet.git
@@ -157,21 +150,70 @@ namespace DotNetCore.API.Controllers
 
 After the user completes the authentication process they have a token. They now pass it to the application to "login" which tells the application which Mobius account to withdraw MOBI from (the user public key) when a payment is needed. For a web application the token is generally passed in via a `token` request parameter. Upon opening the website/loading the application it checks that the token is valid (within time bounds etc) and the account in the token has added the app as a signer so it can withdraw MOBI from it.
 
+### Sample Payment Implementation
+
+Using .NET Core
+
+```csharp
+namespace DotNetCore.API.Controllers
+{
+    [Route("api")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class ApiController : Controller
+    {
+        private IConfiguration Configuration;
+        private string APP_KEY {get; set;}
+        public ApiController(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+            this.APP_KEY = Configuration.GetValue("APP_KEY", "string");
+        }
+
+        [HttpPost("charge")]
+        public async Task<IActionResult> Charge([FromForm] PaymentRequest request)
+        {
+            if (request.Amount <= 0) return BadRequest("Invalid Amount");
+
+            try
+            {
+                string userPublicKey = User.Claims.FirstOrDefault().Value;
+                App dapp = await new AppBuilder().Build(this.APP_KEY, userPublicKey);
+
+                var response = await dapp.Charge(request.Amount, request.TargetAddress);
+
+                return Ok(new {
+                    status = "Ok",
+                    tx_hash = response.Hash,
+                    balance = dapp.UserBalance()
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+    }
+}
+```
+
+
 ## Development
 
 ```bash
 # Clone this repo
 $ git clone https://github.com/mobius-network/mobius-client-dotnet.git
 
-# Build project
+# Build project to ./package/lib
 $ dotnet build
 
 # Run tests
 $ dotnet test Mobius.Test
-
-# Publish project
-$ dotnet publish
 ```
+
+## Full API Demo
+
+Veiw a full .NET Core API demo along with a flappy bird frontend at [https://docs.mobius.network/docs/dotnet-core-api](https://docs.mobius.network/docs/dotnet-core-api)
+
 
 ## Contributing
 
