@@ -6,7 +6,7 @@
     <Version>1.0.0</Version>
     <OutputType>Library</OutputType>
     <LangVersion>7.3</LangVersion>
-    <Description>A Mobius DApp Store SDK used for accepting cryptocurrency payments in any .NET application.</Description>
+    <Description>The official .NET Mobius DApp Store SDK used for accepting cryptocurrency payments.</Description>
     <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
     <PackageTags>'.NET Core' 'Mobius Network' 'Stellar' 'Horizon' 'Blockchain' 'Crypto' 'DApp Store' 'Payments'</PackageTags>
     <Copyright>2018 Mochi, Inc</Copyright>
