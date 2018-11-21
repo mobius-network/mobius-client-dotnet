@@ -6,6 +6,8 @@ using Mobius.Library.Auth;
 using stellar_dotnet_sdk;
 using stellar_dotnet_sdk.chaos.nacl;
 
+using static System.Console;
+
 namespace Mobius.Console
 {
     class Program
@@ -14,7 +16,7 @@ namespace Mobius.Console
         private static KeyPair _devKeypair { get; set; }
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting up Mobius .NET SDK Console App...");
+            WriteLine("Starting up Mobius .NET SDK Console App...");
             Client client = new Client();
 
             _userKeypair = RandomKeypair();
@@ -32,47 +34,47 @@ namespace Mobius.Console
 
         static string GetChallenge(string devSecret)
         {
-            Console.WriteLine("---------------------------------");
-            Console.WriteLine("Generating challenge...");
+            WriteLine("---------------------------------");
+            WriteLine("Generating challenge...");
             
             string challenge = new Challenge().Call(devSecret);
 
-            Console.WriteLine($"Challenge generated: {challenge}");
-            Console.WriteLine("---------------------------------");
+            WriteLine($"Challenge generated: {challenge}");
+            WriteLine("---------------------------------");
 
             return challenge;
         }
 
         static string SignChallenge(string xdr)
         {
-            Console.WriteLine("---------------------------------");
-            Console.WriteLine("Signing requested XDR...");
+            WriteLine("---------------------------------");
+            WriteLine("Signing requested XDR...");
         
             string signedXdr = new Sign().Call(_userKeypair.SeedBytes, xdr, _devKeypair.PublicKey);
 
-            Console.WriteLine($"XDR signed: {signedXdr}");
-            Console.WriteLine("---------------------------------");
+            WriteLine($"XDR signed: {signedXdr}");
+            WriteLine("---------------------------------");
 
             return signedXdr;
         }
 
         static string GenerateAuthToken(string devSecret, string signedXdr, string userPublic)
         {
-            Console.WriteLine("---------------------------------");
-            Console.WriteLine("Generating Auth Token...");
+            WriteLine("---------------------------------");
+            WriteLine("Generating Auth Token...");
 
             Token token = new Token(devSecret, signedXdr, userPublic);
 
-            Console.WriteLine($"Token Generated");
+            WriteLine($"Token Generated");
 
             bool validToken = token.Validate();
 
-            Console.WriteLine($"Token is valid: {validToken}");
+            WriteLine($"Token is valid: {validToken}");
 
             string tokenHash = token.Hash();
 
-            Console.WriteLine($"Token Hash: {tokenHash}");
-            Console.WriteLine("---------------------------------");
+            WriteLine($"Token Hash: {tokenHash}");
+            WriteLine("---------------------------------");
 
             return tokenHash;
         }
