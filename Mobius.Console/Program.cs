@@ -14,7 +14,7 @@ namespace Mobius.Console
         private static KeyPair _devKeypair { get; set; }
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Starting up Mobius .NET SDK Console App...");
+            Console.WriteLine("Starting up Mobius .NET SDK Console App...");
             Client client = new Client();
 
             _userKeypair = RandomKeypair();
@@ -32,47 +32,47 @@ namespace Mobius.Console
 
         static string GetChallenge(string devSecret)
         {
-            System.Console.WriteLine("---------------------------------");
-            System.Console.WriteLine("Generating challenge...");
+            Console.WriteLine("---------------------------------");
+            Console.WriteLine("Generating challenge...");
             
             string challenge = new Challenge().Call(devSecret);
 
-            System.Console.WriteLine($"Challenge generated: {challenge}");
-            System.Console.WriteLine("---------------------------------");
+            Console.WriteLine($"Challenge generated: {challenge}");
+            Console.WriteLine("---------------------------------");
 
             return challenge;
         }
 
         static string SignChallenge(string xdr)
         {
-            System.Console.WriteLine("---------------------------------");
-            System.Console.WriteLine("Signing requested XDR...");
+            Console.WriteLine("---------------------------------");
+            Console.WriteLine("Signing requested XDR...");
         
             string signedXdr = new Sign().Call(_userKeypair.SeedBytes, xdr, _devKeypair.PublicKey);
 
-            System.Console.WriteLine($"XDR signed: {signedXdr}");
-            System.Console.WriteLine("---------------------------------");
+            Console.WriteLine($"XDR signed: {signedXdr}");
+            Console.WriteLine("---------------------------------");
 
             return signedXdr;
         }
 
         static string GenerateAuthToken(string devSecret, string signedXdr, string userPublic)
         {
-            System.Console.WriteLine("---------------------------------");
-            System.Console.WriteLine("Generating Auth Token...");
+            Console.WriteLine("---------------------------------");
+            Console.WriteLine("Generating Auth Token...");
 
             Token token = new Token(devSecret, signedXdr, userPublic);
 
-            System.Console.WriteLine($"Token Generated");
+            Console.WriteLine($"Token Generated");
 
             bool validToken = token.Validate();
 
-            System.Console.WriteLine($"Token is valid: {validToken}");
+            Console.WriteLine($"Token is valid: {validToken}");
 
             string tokenHash = token.Hash();
 
-            System.Console.WriteLine($"Token Hash: {tokenHash}");
-            System.Console.WriteLine("---------------------------------");
+            Console.WriteLine($"Token Hash: {tokenHash}");
+            Console.WriteLine("---------------------------------");
 
             return tokenHash;
         }
